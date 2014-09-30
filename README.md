@@ -27,6 +27,16 @@ Attention: Rdp depends on your Kali version. It may be xfreerdp for the latest v
 
 ### Usage
 
+-s :
+-S :
+-u :
+-U :
+-c :
+-C :
+-p :
+
+If you want see all usage options, please use crowbar --help 
+
 **Brute forcing RDP**  
 ```
  # ./crowbar.py -b rdp -s 172.16.1.12/32 -u Administrator -c pass.txt  
@@ -36,6 +46,10 @@ Attention: Rdp depends on your Kali version. It may be xfreerdp for the latest v
 ```
 # ./crowbar.py -b sshkey -s 127.0.0.1/32 -u root -p 22 -k id_rsa  
 ```
+
+Attention: If you want, you can specify the key directory with -k option. Crowbar will use all the files under this directory for brute force. For instance;
+
+# crowbar.py -k /root/.ssh
 
 **Brute forcing VNC server**  
 ```
@@ -50,8 +64,9 @@ Attention: Rdp depends on your Kali version. It may be xfreerdp for the latest v
 ### Example Output
 
  Once you have executed crowbar, it generates 2 files for logging and result. Default log file name is crowbar.log which is    
- located in your current directory.  
+ located in your current directory. If you don't want use default log file, you should use -l log_path. After that you can   
+ observe crowbar operations. For instance;
 
- # cat crowbar.out 
+ # cat crowbar.log
 
-
+ # cat crowbar.out

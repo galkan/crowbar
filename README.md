@@ -1,9 +1,10 @@
-## Crowbar - Brute forcing tool for pentests
+## Crowbar (Levye) - Brute forcing tool for pentests
 
 
 ### What is it?
 
 **Crowbar** (crowbar) is brute forcing tool that can be used during penetration tests. It is developed to support protocols that are not currently supported by thc-hydra and other popular brute forcing tools. 
+
 Currently **Crowbar** supports  
 - OpenVPN
 - SSH private key authentication
@@ -12,9 +13,9 @@ Currently **Crowbar** supports
 
 ### Installation
 
-First you shoud install prerequisities  
+First you shoud install dependencies
 ```
- # apt-get install openvpn xfreerdp vncviewer ssh 
+ # apt-get install openvpn freerdp-x11 vncviewer ssh 
 ```
 
 Then get latest version from github  
@@ -22,6 +23,7 @@ Then get latest version from github
  # git clone https://github.com/galkan/crowbar 
 ```
 
+Attention: Rdp depends on your Kali version. It may be xfreerdp for the latest version.
 
 ### Usage
 
@@ -45,7 +47,10 @@ Then get latest version from github
 # ./crowbar.py -b openvpn -s 172.16.1.100/32 -m server.ovpn -c pass.txt -u user.txt -k server.ca.crt -p 443  
 ```
 
-### Example output
+### Example Output
+
+ Once you have executed crowbar, it generates 2 files for logging and result. Default log file name is crowbar.log which is    
+ located in your current directory.  
 
  # cat crowbar.out 
 

@@ -27,13 +27,13 @@ Attention: Rdp depends on your Kali version. It may be xfreerdp for the latest v
 
 ### Usage
 
--s :
--S :
--u :
--U :
--c :
--C :
--p :
+**-s :**
+**-S :**
+**-u :**
+**-U :**
+**-c :**
+**-C :**
+**-p :**
 
 If you want see all usage options, please use crowbar --help 
 
@@ -49,7 +49,7 @@ If you want see all usage options, please use crowbar --help
 
 Attention: If you want, you can specify the key directory with -k option. Crowbar will use all the files under this directory for brute force. For instance;
 
-# crowbar.py -k /root/.ssh
+**# crowbar.py -k /root/.ssh**
 
 **Brute forcing VNC server**  
 ```

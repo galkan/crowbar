@@ -124,7 +124,6 @@ class Main:
 			print >> sys.stderr, err
 			sys.exit(1)	
 	
-	
 		self.ip_list = []
 		
 		if self.args.discover:
@@ -191,8 +190,7 @@ class Main:
 
                 
                 if self.args.discover:
-		    result = self.nmap.port_scan(self.args.server, port)
-		    self.ip_list = result
+		    self.ip_list = self.nmap.port_scan(self.args.server, port)
 
           
                 try:
@@ -208,9 +206,21 @@ class Main:
 
                 for ip in self.ip_list:
                         if self.args.username_file:
-                                for user in open(self.args.username_file, "r").read().splitlines():
+				try:
+				    userfile = open(self.args.username_file, "r").read().splitlines()
+                                except:
+				    print >> sys.stderr, "File: %s doesn't exists !!!"% self.args.username_file
+				    sys.exit(1)
+				  
+                                for user in userfile:
                                         if self.args.passwd_file:
-                                                for password in open(self.args.passwd_file, "r").read().splitlines():
+						try:
+						    passwdfile = open(self.args.passwd_file, "r").read().splitlines()
+                                                except:
+						    print >> sys.stderr, "File: %s doesn't exists !!!"% self.args.passwd_file
+						    sys.exit(1) 
+						    
+                                                for password in passwdfile:
                                                         brute_file = tempfile.NamedTemporaryFile(mode='w+t')
                                                         brute_file.write(user + "\n")
                                                         brute_file.write(password + "\n")
@@ -222,7 +232,13 @@ class Main:
                                                 pool.add_task(self.openvpnlogin, ip, user, self.args.passwd, brute_file, port)
                         else:
                                 if self.args.passwd_file:
-                                        for password in open(self.args.passwd_file, "r").read().splitlines():
+					try:
+					    passwdfile = open(self.args.passwd_file, "r").read().splitlines()
+                                        except:
+					    print >> sys.stderr, "File: %s doesn't exists !!!"% self.args.passwd_file
+					    sys.exit(1) 
+
+                                        for password in passwdfile:
                                                 brute_file = tempfile.NamedTemporaryFile(mode='w+t')
                                                 brute_file.write(self.args.username + "\n")
                                                 brute_file.write(password + "\n")
@@ -265,8 +281,8 @@ class Main:
 			port = self.args.port
 		
 		if self.args.discover:
-		    result = self.nmap.port_scan(self.args.server, port)
-		    self.ip_list = result
+		    self.ip_list = self.nmap.port_scan(self.args.server, port)
+		    
 		
 		if not os.path.isfile(self.args.passwd_file):
 			print >> sys.stderr, "Password file doesn't exists !!!"
@@ -315,8 +331,8 @@ class Main:
 			port = self.args.port
 		
 		if self.args.discover:
-		    result = self.nmap.port_scan(self.args.server, port)
-		    self.ip_list = result
+		    self.ip_list = self.nmap.port_scan(self.args.server, port)
+		  
 		
 		try:	
 			pool = ThreadPool(int(self.args.thread))
@@ -324,18 +340,35 @@ class Main:
 			print >> sys.stderr, err
 			sys.exit(1)
 
-
 		for ip in self.ip_list:
 			if self.args.username_file:
-				for user in open(self.args.username_file, "r").read().splitlines():
-					if self.args.passwd_file:			
-						for password in open(self.args.passwd_file, "r").read().splitlines():
+				try:
+				    userfile = open(self.args.username_file, "r").read().splitlines()
+				except:
+				    print >> sys.stderr, "File: %s doesn't exists !!!"% self.args.username_file
+				    sys.exit(1)
+
+				for user in userfile:
+					if self.args.passwd_file:
+						try:
+						    passwdfile = open(self.args.passwd_file, "r").read().splitlines()
+						except:
+						    print >> sys.stderr, "File: %s doesn't exists"% self.args.passwd_file  
+						    sys.exit(1)
+
+						for password in passwdfile:
 							pool.add_task(self.rdplogin, ip, user, password, port)
 					else:
 						pool.add_task(self.rdplogin, ip, user, self.args.passwd, port)
 			else:
 				if self.args.passwd_file:
-					for password in open(self.args.passwd_file, "r").read().splitlines():
+					try:
+					    passwdfile = open(self.args.passwd_file, "r").read().splitlines()
+					except:
+					    print >> sys.stderr, "File: %s doesn't exists"% self.args.passwd_file  
+					    sys.exit(1)
+					    
+					for password in passwdfile:
 						pool.add_task(self.rdplogin, ip, self.args.username, password, port)
 				else:
 					pool.add_task(self.rdplogin, ip, self.args.username, self.args.passwd, port)
@@ -373,8 +406,7 @@ class Main:
 			port = self.args.port
 		
 		if self.args.discover:
-		    result = self.nmap.port_scan(self.args.server, port)
-		    self.ip_list = result
+		    self.ip_list = self.nmap.port_scan(self.args.server, port)
 		
 		try:
 			pool = ThreadPool(self.args.thread)
@@ -382,9 +414,16 @@ class Main:
 			print >> sys.stderr, err
 			sys.exit(1)
 	
+		
 		for ip in self.ip_list:
 			if self.args.username_file:
-				for user in open(self.args.username_file, "r").read().splitlines():
+				try:
+				    userfile = open(self.args.username_file, "r").read().splitlines()
+				except:
+				    print >> sys.stderr, "File: %s doesn't exists !!!"% self.args.username_file
+				    sys.exit(1)
+				    
+				for user in userfile:
 					if os.path.isdir(self.args.key_file):
 						for dirname, dirnames, filenames in os.walk(self.args.key_file):
 							for keyfile in filenames:
@@ -419,7 +458,8 @@ class Main:
 			if Main.is_success == 0:
 			    print "No result is found ..."
 			    
-			    
+			  
+			  
 	def signal_handler(self, signal, frame):
 
         	print('Exit ...')

@@ -35,7 +35,7 @@ class Nmap:
 	
                 proc = subprocess.Popen([run_nmap], shell = True, stdout = subprocess.PIPE,)
                 stdout_value = str(proc.communicate())
-
+               
 		for line in open(tmpfile_name,"r"):
 		    if re.search(open_port, line):
 			ip = line[:-1].split(" ")[1]

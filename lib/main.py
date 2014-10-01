@@ -9,13 +9,14 @@ try:
 	import argparse
 	import tempfile
 	import subprocess
-	from lib.common import *
-	from lib.logger import Logger
-	from lib.threadpool import ThreadPool
-	from lib.iprange import IpRange,InvalidIPAddress
-except ImportError,e:
+	from lib.nmap import Nmap
+	from lib.core.common import *
+	from lib.core.logger import Logger
+	from lib.core.threadpool import ThreadPool
+	from lib.core.iprange import IpRange,InvalidIPAddress
+except ImportError,err:
         import sys
-        sys.stdout.write("%s\n" %e)
+        sys.stdout.write("%s\n" %err)
         sys.exit(1)
 
 
@@ -74,6 +75,8 @@ class AddressAction(argparse.Action):
 			
 			
 class Main:
+  
+	is_success = 0
 		
 	def __init__(self):
 		
@@ -110,6 +113,8 @@ class Main:
 		parser.add_argument('-p', '--port', dest = 'port', action = 'store', help = 'Service Port Number', type = int)		
 		parser.add_argument('-k', '--key', dest = 'key_file', action = 'store', help = 'Key File')
 		parser.add_argument('-m', '--config', dest = 'config', action = 'store', help = 'Configuration File')
+		parser.add_argument('-d', '--discover', dest = 'discover', action = 'store_true', help = '', default = None)
+		parser.add_argument('-v', '--verbose', dest = 'verbose', action = 'store_true', help = '', default = None)
 		
 		parser.add_argument('options', nargs = '*', action = AddressAction)
 
@@ -121,9 +126,12 @@ class Main:
 	
 	
 		self.ip_list = []
-		iprange = IpRange()
 		
-		try:
+		if self.args.discover:
+		    self.nmap = Nmap()
+		else:
+		    iprange = IpRange()
+		    try:
 			if self.args.server is not None:
 			    for _ in self.args.server.split(","):
 				for ip in iprange.iprange(_):
@@ -133,14 +141,18 @@ class Main:
 				for ip in iprange.iprange(_):
 				    if not ip in self.ip_list:
 					self.ip_list.append(ip)
-		except IOError: 
+		    except IOError: 
 			print >> sys.stderr, "File: %s cannot be opened !!!"% self.args.server_file
 			sys.exit(1)
-		except:
+		    except:
 			print >> sys.stderr, "InvalidIPAddress !!! Please try to use IP/CIDR notation <192.168.37.37/32, 192.168.1.0/24>"
 			sys.exit(1)
-				
-		self.logger = Logger(self.args.log_file, self.args.output)
+		
+		if self.args.verbose:
+		    self.logger = Logger(self.args.log_file, self.args.output, True)
+		else:
+		    self.logger = Logger(self.args.log_file, self.args.output)
+		    
 		self.logger.log_file("START")
 		
 
@@ -153,12 +165,13 @@ class Main:
                 openvpn_cmd = "%s --config %s --auth-user-pass %s --remote %s %s"% (self.openvpn_path, self.args.config, brute_file_name, host, port)
                 proc = subprocess.Popen(shlex.split(openvpn_cmd), shell=False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
-                brute =  "LOG: OPENVPN: " + host + ":" + username + ":" + password + ":" + brute_file_name
+                brute =  "LOG-OPENVPN: " + host + ":" + username + ":" + password + ":" + brute_file_name
                 self.logger.log_file(brute)
                 for line in iter(proc.stdout.readline, ''):
                         if re.search(self.vpn_success, line):
-                                result = bcolors.OKGREEN + "VPN-SUCCESS: " + bcolors.ENDC + bcolors.OKBLUE + host + "," + username + "," + password + bcolors.ENDC
+                                result = bcolors.OKGREEN + "VPN-SUCCESS: " + bcolors.ENDC + bcolors.OKBLUE + host + " - " + username + ":" + password + bcolors.ENDC
                                 self.logger.output_file(result)
+                                Main.is_success = 1
                                 os.kill(proc.pid, signal.SIGQUIT)
 
                 brute_file.close()
@@ -177,6 +190,11 @@ class Main:
                         port = self.args.port
 
                 
+                if self.args.discover:
+		    result = self.nmap.port_scan(self.args.server, port)
+		    self.ip_list = result
+
+          
                 try:
                         pool = ThreadPool(int(self.args.thread))
                 except Exception, err:
@@ -224,13 +242,14 @@ class Main:
 		vnc_cmd = "%s -passwd %s %s:%s"% (self.vncviewer_path, passwd_file, ip, port)
 		proc = subprocess.Popen(shlex.split(vnc_cmd), shell=False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)		
 
-		brute =  "LOG: VNC: " + ip + ":" + str(port) + ":" + passwd_file
+		brute =  "LOG-VNC: " + ip + ":" + str(port) + ":" + passwd_file
 		self.logger.log_file(brute)
 		for line in iter(proc.stderr.readline, ''):
 			if re.search(self.vnc_success, line):
 				os.kill(proc.pid, signal.SIGQUIT)
-				result = bcolors.OKGREEN + "VNC-SUCCESS: " + bcolors.ENDC +  bcolors.OKBLUE + ip + "," + str(port) + "," + passwd_file + bcolors.ENDC
+				result = bcolors.OKGREEN + "VNC-SUCCESS: " + bcolors.ENDC +  bcolors.OKBLUE + ip + ":" + str(port) + " - " + passwd_file + bcolors.ENDC
 				self.logger.output_file(result)
+				Main.is_success = 1
 				break
 
 
@@ -244,7 +263,11 @@ class Main:
 
 		if self.args.port is not None:
 			port = self.args.port
-				
+		
+		if self.args.discover:
+		    result = self.nmap.port_scan(self.args.server, port)
+		    self.ip_list = result
+		
 		if not os.path.isfile(self.args.passwd_file):
 			print >> sys.stderr, "Password file doesn't exists !!!"
 			sys.exit(1) 				
@@ -271,8 +294,9 @@ class Main:
 		self.logger.log_file(brute)
 		for line in iter(proc.stderr.readline, ''):
 			if re.search(self.rdp_success, line):
-				result = bcolors.OKGREEN + "RDP-SUCCESS : " + bcolors.ENDC + bcolors.OKBLUE + ip + "," + user + "," + password + "," + str(port) + bcolors.ENDC
-				self.logger.output_file(result)				
+				result = bcolors.OKGREEN + "RDP-SUCCESS : " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(port) + " - " + user + ":" + password + "," + bcolors.ENDC
+				self.logger.output_file(result)
+				Main.is_success = 1
 				break
 			elif re.search(self.rdp_display_error, line):
 				print >> sys.stderr, "Please check \$DISPLAY is properly set. See readme %s"% self.crowbar_readme
@@ -290,6 +314,9 @@ class Main:
 		if self.args.port is not None:
 			port = self.args.port
 		
+		if self.args.discover:
+		    result = self.nmap.port_scan(self.args.server, port)
+		    self.ip_list = result
 		
 		try:	
 			pool = ThreadPool(int(self.args.thread))
@@ -326,13 +353,14 @@ class Main:
 		except:
 		    pass
 		else:
-		    brute =  "LOG-SSH : " + ip + ":" + str(port) + ":" + user + ":" + keyfile + ":" + str(timeout)
+		    brute =  "LOG-SSH: " + ip + ":" + str(port) + ":" + user + ":" + keyfile + ":" + str(timeout)
 		    self.logger.log_file(brute)
 		  
 		    try:
 			ssh.connect(ip, port, username = user, password = None, pkey = None, key_filename = keyfile, timeout = timeout, allow_agent = False, look_for_keys = False)
-			result = bcolors.OKGREEN + "SUCCESS-SSH : " + bcolors.ENDC + bcolors.OKBLUE + ip + "," + str(port) + "," + user + "," + keyfile + bcolors.ENDC
+			result = bcolors.OKGREEN + "SSH-SUCCESS : " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(port) + " - " + user + ":" + keyfile + bcolors.ENDC
 			self.logger.output_file(result)
+			Main.is_success = 1
 		    except:
 			pass
 			
@@ -340,9 +368,13 @@ class Main:
 	def sshkey(self):
 
 		port = 22
-				
+		
 		if self.args.port is not None:
 			port = self.args.port
+		
+		if self.args.discover:
+		    result = self.nmap.port_scan(self.args.server, port)
+		    self.ip_list = result
 		
 		try:
 			pool = ThreadPool(self.args.thread)
@@ -383,8 +415,11 @@ class Main:
 		else:
 			self.services[brute_type]()
 			self.logger.log_file("STOP")
-
-
+		      
+			if Main.is_success == 0:
+			    print "No result is found ..."
+			    
+			    
 	def signal_handler(self, signal, frame):
 
         	print('Exit ...')

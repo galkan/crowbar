@@ -10,7 +10,7 @@ except ImportError,e:
 	
 class Logger:
 
-	def __init__(self, log_file, output_file):
+	def __init__(self, log_file, output_file, opt = None):
 	  
 	  
 		self.logger_log = logging.getLogger('log_file')
@@ -21,6 +21,11 @@ class Logger:
 		formatter = logging.Formatter("%(asctime)s %(message)s", "%Y-%m-%d %H:%M:%S")
 		handler_log.setFormatter(formatter)
 		self.logger_log.addHandler(handler_log)
+
+		if opt is not None:
+		    consolelogHandler = logging.StreamHandler()
+		    consolelogHandler.setFormatter(formatter)
+		    self.logger_log.addHandler(consolelogHandler)
 
 		
 		self.logger_output = logging.getLogger('output_file')

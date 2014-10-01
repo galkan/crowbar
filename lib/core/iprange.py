@@ -1,12 +1,12 @@
 
 try:
+	import re
+	import sys
 	import socket	
   	import struct
+except ImportError,err:
   	import sys
-  	import re
-except ImportError,e:
-  	import sys
-  	sys.stdout.write("%s\n" %e)
+  	sys.stdout.write("%s\n" %err)
   	sys.exit(14)
 
 

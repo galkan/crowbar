@@ -13,8 +13,8 @@ try:
 	from lib.core.common import *
 	from lib.core.logger import Logger
 	from lib.core.threadpool import ThreadPool
-	from lib.core.iprange import IpRange,InvalidIPAddress
 	from lib.core.exceptions import CrowbarExceptions
+	from lib.core.iprange import IpRange,InvalidIPAddress
 except Exception, err:
 	from lib.core.exceptions import CrowbarExceptions
         raise CrowbarExceptions(str(err))
@@ -24,18 +24,13 @@ class AddressAction(argparse.Action):
   
         def __call__(self, parser, args, values, option = None):
 
-		if args.username and os.path.isfile(args.username):
-		     mess = "%s is not valid options. Please use -U option for using file"% args.username
-		     raise CrowbarExceptions(mess)
+		cmd_list = (args.username, args.passwd, args.server)
+		warning = {args.username:"-U", args.passwd:"-P", args.server:"-S"}
+		
+		for _ in cmd_list:
+		     if _ and os.path.isfile(_):
+			  raise CrowbarExceptions("%s is not valid option. Please use %s option"% (_,warning[_]))
         
-		if args.passwd and os.path.isfile(args.passwd):
-		     mess = "%s is not valid options. Please use -P option for using file"% args.passwd
-		     raise CrowbarExceptions(mess)
-        
-		if args.server and os.path.isfile(args.server):
-		     mess = "%s is not valid options. Please use -S option for using file"% args.server
-		     raise CrowbarExceptions(mess)
-	      
         
 		if args.brute == "sshkey":
 			if args.key_file is None:
@@ -177,7 +172,7 @@ class Main:
                 openvpn_cmd = "%s --config %s --auth-user-pass %s --remote %s %s"% (self.openvpn_path, self.args.config, brute_file_name, host, port)
                 proc = subprocess.Popen(shlex.split(openvpn_cmd), shell=False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
-                brute =  "LOG-OPENVPN: " + host + ":" + username + ":" + password + ":" + brute_file_name
+                brute =  "LOG-OPENVPN: " + host + ":" + username + " - " + password + ":" + brute_file_name
                 self.logger.log_file(brute)
                 for line in iter(proc.stdout.readline, ''):
                         if re.search(self.vpn_success, line):
@@ -271,7 +266,7 @@ class Main:
 		vnc_cmd = "%s -passwd %s %s:%s"% (self.vncviewer_path, passwd_file, ip, port)
 		proc = subprocess.Popen(shlex.split(vnc_cmd), shell=False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)		
 
-		brute =  "LOG-VNC: " + ip + ":" + str(port) + ":" + passwd_file
+		brute =  "LOG-VNC: " + ip + ":" + str(port) + " -" + passwd_file
 		self.logger.log_file(brute)
 		for line in iter(proc.stderr.readline, ''):
 			if re.search(self.vnc_success, line):
@@ -319,7 +314,7 @@ class Main:
 		rdp_cmd = "%s /sec:nla /p:%s /u:%s /port:%s /v:%s +auth-only /cert-ignore"% (self.xfreerdp_path, password, user, port, ip)
 		proc = subprocess.Popen(shlex.split(rdp_cmd), shell=False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)		
 
-		brute =  "LOG-RDP: " + ip + ":" + user + ":" + password + ":" + str(port)
+		brute =  "LOG-RDP: " + ip + ":" + str(port) + " - " + user + ":" + password
 		self.logger.log_file(brute)
 		for line in iter(proc.stderr.readline, ''):
 			if re.search(self.rdp_success, line):
@@ -398,7 +393,7 @@ class Main:
 		except:
 		    pass
 		else:
-		    brute =  "LOG-SSH: " + ip + ":" + str(port) + ":" + user + ":" + keyfile + ":" + str(timeout)
+		    brute =  "LOG-SSH: " + ip + ":" + str(port) + " - " + user + ":" + keyfile + ":" + str(timeout)
 		    self.logger.log_file(brute)
 		  
 		    try:

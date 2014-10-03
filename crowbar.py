@@ -3,9 +3,10 @@
 
 try:
 	from lib.main import Main
-except ImportError,e:
+	from lib.core.exceptions import CrowbarExceptions
+except Exception, err:
         import sys
-        sys.stdout.write("%s\n" %e)
+        print >> sys.stderr, err
         sys.exit(1)
      
 ##
@@ -14,5 +15,10 @@ except ImportError,e:
 
 if __name__ == "__main__":
 
-	crowbar = Main()
-	crowbar.run(crowbar.args.brute)
+	try:
+	    crowbar = Main()
+	    crowbar.run(crowbar.args.brute)
+	except Exception, err:
+	    import sys
+	    print >> sys.stderr, err
+	    sys.exit(1)

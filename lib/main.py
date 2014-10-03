@@ -14,62 +14,75 @@ try:
 	from lib.core.logger import Logger
 	from lib.core.threadpool import ThreadPool
 	from lib.core.iprange import IpRange,InvalidIPAddress
-except ImportError,err:
-        import sys
-        sys.stdout.write("%s\n" %err)
-        sys.exit(1)
+	from lib.core.exceptions import CrowbarExceptions
+except Exception, err:
+	from lib.core.exceptions import CrowbarExceptions
+        raise CrowbarExceptions(str(err))
 
-
+        
 class AddressAction(argparse.Action):
   
         def __call__(self, parser, args, values, option = None):
 
+		if args.username and os.path.isfile(args.username):
+		     mess = "%s is not valid options. Please use -U option for using file"% args.username
+		     raise CrowbarExceptions(mess)
+        
+		if args.passwd and os.path.isfile(args.passwd):
+		     mess = "%s is not valid options. Please use -P option for using file"% args.passwd
+		     raise CrowbarExceptions(mess)
+        
+		if args.server and os.path.isfile(args.server):
+		     mess = "%s is not valid options. Please use -S option for using file"% args.server
+		     raise CrowbarExceptions(mess)
+	      
+        
 		if args.brute == "sshkey":
 			if args.key_file is None:
-				print >> sys.stderr, """ Usage: use --help for futher information\ncrowbar.py: error: argument -k/--key: expected one argument """
-				sys.exit(1)
+				mess =  """ Usage: use --help for futher information\ncrowbar.py: error: argument -k/--key: expected one argument """
+				raise CrowbarExceptions(mess)
 			elif (args.username is None) and (args.username_file is None):
-				print >> sys.stderr, """ Usage: use --help for futher information\ncrowbar.py: error: argument -u/--username or -U/--usernamefile expected one argument """
-				sys.exit(1)
+				mess =  """ Usage: use --help for futher information\ncrowbar.py: error: argument -u/--username or -U/--usernamefile expected one argument """
+				raise CrowbarExceptions(mess)
 			elif (args.server is None) and (args.server_file is None):
-				print >> sys.stderr, """ Usage: use --help for futher information\ncrowbar.py: error: argument -s/--server or -S/--serverfile expected one argument """
-				sys.exit(1)
+				mess = """ Usage: use --help for futher information\ncrowbar.py: error: argument -s/--server or -S/--serverfile expected one argument """
+				raise CrowbarExceptions(mess)
 			
 		elif args.brute == "rdp":	
 			if (args.username is None) and (args.username_file is None):
-				print >> sys.stderr, """ Usage: use --help for futher information\ncrowbar.py: error: argument -u/--username or -U/--usernamefile expected one argument """
-				sys.exit(1)
+				mess =  """ Usage: use --help for futher information\ncrowbar.py: error: argument -u/--username or -U/--usernamefile expected one argument """
+				raise CrowbarExceptions(mess)
 			elif (args.passwd is None) and (args.passwd_file is None):
-				print >> sys.stderr, """ Usage: use --help for futher information\ncrowbar.py: error: argument -c/--passwd or -C/--passwdfile expected one argument """
-				sys.exit(1)
+				mess =  """ Usage: use --help for futher information\ncrowbar.py: error: argument -c/--passwd or -C/--passwdfile expected one argument """
+				raise CrowbarExceptions(mess)
 			elif (args.server is None) and (args.server_file is None):
-				print >> sys.stderr, """ Usage: use --help for futher information\ncrowbar.py: error: argument -s/--server or -S/--serverfile expected one argument """
-				sys.exit(1)
+				mess =  """ Usage: use --help for futher information\ncrowbar.py: error: argument -s/--server or -S/--serverfile expected one argument """
+				raise CrowbarExceptions(mess)
 		
 		elif args.brute == "vnckey": 
 			if args.passwd_file is None:
-				print >> sys.stderr, """ Usage: use --help for futher information\ncrowbar.py: error: argument -C/--passwdfile expected one argument """
-				sys.exit(1)
+				mess =  """ Usage: use --help for futher information\ncrowbar.py: error: argument -C/--passwdfile expected one argument """
+				raise CrowbarExceptions(mess)
 			elif (args.server is None) and (args.server_file is None):
-				print >> sys.stderr, """ Usage: use --help for futher information\ncrowbar.py: error: argument -s/--server or -S/--serverfile expected one argument """
-				sys.exit(1)	
+				mess =  """ Usage: use --help for futher information\ncrowbar.py: error: argument -s/--server or -S/--serverfile expected one argument """
+				raise CrowbarExceptions(mess)	
 			
 		elif args.brute == "openvpn":
 			if args.config is None:
-				print >> sys.stderr, """ Usage: use --help for futher information\ncrowbar.py: error: argument -m/--config expected one argument """
-				sys.exit(1)
+				mess =  """ Usage: use --help for futher information\ncrowbar.py: error: argument -m/--config expected one argument """
+				raise CrowbarExceptions(mess)
 			elif (args.server is None) and (args.server_file is None):
-				print >> sys.stderr, """ Usage: use --help for futher information\ncrowbar.py: error: argument -s/--server or -S/--serverfile expected one argument """
-				sys.exit(1)
+				mess =  """ Usage: use --help for futher information\ncrowbar.py: error: argument -s/--server or -S/--serverfile expected one argument """
+				raise CrowbarExceptions(mess)
 			elif (args.username is None) and (args.username_file is None):
-				print >> sys.stderr, """ Usage: use --help for futher information\ncrowbar.py: error: argument -u/--username or -U/--usernamefile expected one argument """
-				sys.exit(1)
+				mess =  """ Usage: use --help for futher information\ncrowbar.py: error: argument -u/--username or -U/--usernamefile expected one argument """
+				raise CrowbarExceptions(mess)
 			elif (args.passwd is None) and (args.passwd_file is None):
-				print >> sys.stderr, """ Usage: use --help for futher information\ncrowbar.py: error: argument -c/--passwd or -C/--passwdfile expected one argument """
-				sys.exit(1)
+				mess =  """ Usage: use --help for futher information\ncrowbar.py: error: argument -c/--passwd or -C/--passwdfile expected one argument """
+				raise CrowbarExceptions(mess)
 			elif args.key_file is None:
-				print >> sys.stderr, """ Usage: use --help for futher information\ncrowbar.py: error: argument -k/--key_file expected one argument """
-				sys.exit(1)
+				mess =  """ Usage: use --help for futher information\ncrowbar.py: error: argument -k/--key_file expected one argument """
+				raise CrowbarExceptions(mess)
 		  
 
 			
@@ -121,8 +134,7 @@ class Main:
 		try:
                 	self.args = parser.parse_args()
 		except Exception, err:
-			print >> sys.stderr, err
-			sys.exit(1)	
+			raise CrowbarExceptions(str(err))	
 	
 		self.ip_list = []
 		
@@ -141,11 +153,12 @@ class Main:
 				    if not ip in self.ip_list:
 					self.ip_list.append(ip)
 		    except IOError: 
-			print >> sys.stderr, "File: %s cannot be opened !!!"% self.args.server_file
-			sys.exit(1)
+			mess =  "File: %s cannot be opened !!!"% self.args.server_file
+			raise CrowbarExceptions(mess)
 		    except:
-			print >> sys.stderr, "InvalidIPAddress !!! Please try to use IP/CIDR notation <192.168.37.37/32, 192.168.1.0/24>"
-			sys.exit(1)
+			mess =  "InvalidIPAddress !!! Please try to use IP/CIDR notation <192.168.37.37/32, 192.168.1.0/24>"
+			raise CrowbarExceptions(mess)
+		
 		
 		if self.args.verbose:
 		    self.logger = Logger(self.args.log_file, self.args.output, True)
@@ -182,8 +195,8 @@ class Main:
                 port = 443
 
                 if not os.path.exists(self.openvpn_path):
-                        print >> sys.stderr, "openvpn: %s path doesn't exists on the system !!!"% (self.openvpn_path)
-                        sys.exit(1)
+                        mess =  "openvpn: %s path doesn't exists on the system !!!"% (self.openvpn_path)
+                        raise CrowbarExceptions(mess)
 
                 if self.args.port is not None:
                         port = self.args.port
@@ -196,29 +209,29 @@ class Main:
                 try:
                         pool = ThreadPool(int(self.args.thread))
                 except Exception, err:
-                        print >> sys.stderr, err
-                        sys.exit(1)
+                        raise CrowbarExceptions(str(err))
+		      
 
                 for config_line in open(self.args.config, "r"):
                         if re.search(self.vpn_remote_regex, config_line):
-                                print self.vpn_warning
-                                sys.exit(1)
+                                raise CrowbarExceptions(self.vpn_warning)
+                                
 
                 for ip in self.ip_list:
                         if self.args.username_file:
 				try:
 				    userfile = open(self.args.username_file, "r").read().splitlines()
                                 except:
-				    print >> sys.stderr, "File: %s doesn't exists !!!"% self.args.username_file
-				    sys.exit(1)
+				    mess = "File: %s doesn't exists !!!"% self.args.username_file
+				    raise CrowbarExceptions(mess)
 				  
                                 for user in userfile:
                                         if self.args.passwd_file:
 						try:
 						    passwdfile = open(self.args.passwd_file, "r").read().splitlines()
                                                 except:
-						    print >> sys.stderr, "File: %s doesn't exists !!!"% self.args.passwd_file
-						    sys.exit(1) 
+						    mess = "File: %s doesn't exists !!!"% self.args.passwd_file
+						    raise CrowbarExceptions(mess) 
 						    
                                                 for password in passwdfile:
                                                         brute_file = tempfile.NamedTemporaryFile(mode='w+t')
@@ -235,8 +248,8 @@ class Main:
 					try:
 					    passwdfile = open(self.args.passwd_file, "r").read().splitlines()
                                         except:
-					    print >> sys.stderr, "File: %s doesn't exists !!!"% self.args.passwd_file
-					    sys.exit(1) 
+					    mess =  "File: %s doesn't exists !!!"% self.args.passwd_file
+					    raise CrowbarExceptions(mess) 
 
                                         for password in passwdfile:
                                                 brute_file = tempfile.NamedTemporaryFile(mode='w+t')
@@ -274,8 +287,8 @@ class Main:
 		port = 5901
 		
 		if not os.path.exists(self.vncviewer_path):
-			print >> sys.stderr, "vncviewer: %s path doesn't exists on the system !!!"% (self.vncviewer_path)
-			sys.exit(1)
+			mess =  "vncviewer: %s path doesn't exists on the system !!!"% (self.vncviewer_path)
+			raise CrowbarExceptions(mess)
 
 		if self.args.port is not None:
 			port = self.args.port
@@ -285,15 +298,15 @@ class Main:
 		    
 		
 		if not os.path.isfile(self.args.passwd_file):
-			print >> sys.stderr, "Password file doesn't exists !!!"
-			sys.exit(1) 				
+			mess =  "Password file doesn't exists !!!"
+			raise CrowbarExceptions(mess) 				
 			
 		try:	
 			pool = ThreadPool(int(self.args.thread))
 		except Exception, err:
-			print >> sys.stderr, err
-			sys.exit(1)
+			raise CrowbarExceptions(str(err))
 
+			
 		for ip in self.ip_list:
 			pool.add_task(self.vnclogin, ip, port, self.args.passwd_file)
 					
@@ -315,8 +328,8 @@ class Main:
 				Main.is_success = 1
 				break
 			elif re.search(self.rdp_display_error, line):
-				print >> sys.stderr, "Please check \$DISPLAY is properly set. See readme %s"% self.crowbar_readme
-				break		
+				mess =  "Please check \$DISPLAY is properly set. See readme %s"% self.crowbar_readme
+				raise CrowbarExceptions(mess)	
 		
 
 	def rdp(self):
@@ -324,8 +337,8 @@ class Main:
 		port = 3389
 
 		if not os.path.exists(self.xfreerdp_path):
-			print >> sys.stderr, "xfreerdp: %s path doesn't exists on the system !!!"% (self.xfreerdp_path)
-			sys.exit(1)
+			mess = "xfreerdp: %s path doesn't exists on the system !!!"% (self.xfreerdp_path)
+			raise CrowbarExceptions(mess)
 
 		if self.args.port is not None:
 			port = self.args.port
@@ -337,24 +350,23 @@ class Main:
 		try:	
 			pool = ThreadPool(int(self.args.thread))
 		except Exception, err:
-			print >> sys.stderr, err
-			sys.exit(1)
+			raise CrowbarExceptions(str(err))
 
 		for ip in self.ip_list:
 			if self.args.username_file:
 				try:
 				    userfile = open(self.args.username_file, "r").read().splitlines()
 				except:
-				    print >> sys.stderr, "File: %s doesn't exists !!!"% self.args.username_file
-				    sys.exit(1)
+				    mess =  "File: %s doesn't exists !!!"% self.args.username_file
+				    raise CrowbarExceptions(mess)
 
 				for user in userfile:
 					if self.args.passwd_file:
 						try:
 						    passwdfile = open(self.args.passwd_file, "r").read().splitlines()
 						except:
-						    print >> sys.stderr, "File: %s doesn't exists"% self.args.passwd_file  
-						    sys.exit(1)
+						    mess =  "File: %s doesn't exists"% self.args.passwd_file  
+						    raise CrowbarExceptions(mess)
 
 						for password in passwdfile:
 							pool.add_task(self.rdplogin, ip, user, password, port)
@@ -365,8 +377,8 @@ class Main:
 					try:
 					    passwdfile = open(self.args.passwd_file, "r").read().splitlines()
 					except:
-					    print >> sys.stderr, "File: %s doesn't exists"% self.args.passwd_file  
-					    sys.exit(1)
+					    mess =  "File: %s doesn't exists"% self.args.passwd_file  
+					    raise CrowbarExceptions(mess)
 					    
 					for password in passwdfile:
 						pool.add_task(self.rdplogin, ip, self.args.username, password, port)
@@ -411,8 +423,7 @@ class Main:
 		try:
 			pool = ThreadPool(self.args.thread)
 		except Exception, err:
-			print >> sys.stderr, err
-			sys.exit(1)
+			raise CrowbarExceptions(str(err))
 	
 		
 		for ip in self.ip_list:
@@ -420,8 +431,8 @@ class Main:
 				try:
 				    userfile = open(self.args.username_file, "r").read().splitlines()
 				except:
-				    print >> sys.stderr, "File: %s doesn't exists !!!"% self.args.username_file
-				    sys.exit(1)
+				    mess =  "File: %s doesn't exists !!!"% self.args.username_file
+				    raise CrowbarExceptions(mess)
 				    
 				for user in userfile:
 					if os.path.isdir(self.args.key_file):
@@ -449,8 +460,8 @@ class Main:
 		signal.signal(signal.SIGINT, self.signal_handler)
 		
 		if not brute_type in self.services.keys():
-			print >> sys.stderr, "%s is not valid service. Please select %s "% (brute_type, self.services.keys())
-			sys.exit(1)
+			mess =  "%s is not valid service. Please select %s "% (brute_type, self.services.keys())
+			raise CrowbarExceptions(mess)
 		else:
 			self.services[brute_type]()
 			self.logger.log_file("STOP")
@@ -462,5 +473,5 @@ class Main:
 			  
 	def signal_handler(self, signal, frame):
 
-        	print('Exit ...')
-        	sys.exit(1)	
+        	raise CrowbarExceptions("Exit ...")
+        	

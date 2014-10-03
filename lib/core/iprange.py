@@ -4,11 +4,11 @@ try:
 	import sys
 	import socket	
   	import struct
-except ImportError,err:
-  	import sys
-  	sys.stdout.write("%s\n" %err)
-  	sys.exit(14)
-
+  	from lib.core.exceptions import CrowbarExceptions
+except Exceptions ,err:
+	from lib.core.exceptions import CrowbarExceptions
+	raise CrowbarExceptions(str(err))
+  	
 
 class InvalidIPAddress(ValueError):
     	"The ip address given to ipaddr is improperly formatted"

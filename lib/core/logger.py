@@ -2,10 +2,11 @@
 try:
 	import logging
 	import os.path
-except ImportError,e:
-	import sys
-	sys.stdout.write("%s\n" %e)
-	sys.exit(1)
+	from lib.core.exceptions import CrowbarExceptions
+except Exception, err:
+	from lib.core.exceptions import CrowbarExceptions
+	raise CrowbarExceptions(str(err))
+	
 
 	
 class Logger:

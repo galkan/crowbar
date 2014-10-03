@@ -7,6 +7,7 @@ try:
 	import subprocess
 	from lib.core.exceptions import CrowbarExceptions
 except Exception, err:
+	from lib.core.exceptions import CrowbarExceptions
         raise CrowbarExceptions(str(err))
 
 

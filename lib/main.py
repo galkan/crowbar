@@ -24,19 +24,14 @@ class AddressAction(argparse.Action):
   
         def __call__(self, parser, args, values, option = None):
 
-		if args.username and os.path.isfile(args.username):
-		     mess = "%s is not valid options. Please use -U option for using file"% args.username
-		     raise CrowbarExceptions(mess)
-        
-		if args.passwd and os.path.isfile(args.passwd):
-		     mess = "%s is not valid options. Please use -P option for using file"% args.passwd
-		     raise CrowbarExceptions(mess)
-        
-		if args.server and os.path.isfile(args.server):
-		     mess = "%s is not valid options. Please use -S option for using file"% args.server
-		     raise CrowbarExceptions(mess)
-	      
-        
+		cmd_list = (args.username, args.passwd, args.server)
+		warning = {args.username:"-U", args.passwd:"-P", args.server:"-S"}
+		
+		for _ in cmd_list:
+		     if _ and os.path.isfile(_):
+			  raise CrowbarExceptions("%s is not valid option. Please use %s option"% (_,warning[_]))
+	
+
 		if args.brute == "sshkey":
 			if args.key_file is None:
 				mess =  """ Usage: use --help for futher information\ncrowbar.py: error: argument -k/--key: expected one argument """

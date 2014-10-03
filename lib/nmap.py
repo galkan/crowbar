@@ -42,8 +42,8 @@ class Nmap:
 		    		if re.search(open_port, line):
 					ip = line[:-1].split(" ")[1]
 					result.append(ip)
-
 			return result	
+			
 		except Exception, err:
 			raise CrowbarExceptions(str(err))
 		

@@ -1,13 +1,13 @@
+
 try:
 	import re
 	import os		
 	import sys	
 	import tempfile
 	import subprocess
-except ImportError, err:
-        import sys
-        sys.stdout.write("%s\n" %err)
-        sys.exit(1)
+	from lib.core.exceptions import CrowbarExceptions
+except Exception, err:
+        raise CrowbarExceptions(str(err))
 
 
 class Nmap:
@@ -18,8 +18,8 @@ class Nmap:
 		self.nmap_path = "/usr/bin/nmap"
 		
 		if not os.path.exists(self.nmap_path):
-		    print >> sys.stderr, "File: %s doesn't exists !!!"% self.nmap_path
-		    sys.exit(1)
+		    mess =  "File: %s doesn't exists !!!"% self.nmap_path
+		    raise CrowbarExceptions(mess)
 		    	
 
 	def port_scan(self, ip_list, port):	

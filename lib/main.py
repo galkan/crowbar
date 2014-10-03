@@ -29,8 +29,10 @@ class AddressAction(argparse.Action):
 		
 		for _ in cmd_list:
 		     if _ and os.path.isfile(_):
-			  raise CrowbarExceptions("%s is not valid option. Please use %s option"% (_,warning[_]))
-
+			  mess = "%s is not valid option. Please use %s option"% (_,warning[_])
+			  raise CrowbarExceptions(mess)
+        
+        
 		if args.brute == "sshkey":
 			if args.key_file is None:
 				mess =  """ Usage: use --help for futher information\ncrowbar.py: error: argument -k/--key: expected one argument """

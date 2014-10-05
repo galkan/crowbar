@@ -56,8 +56,8 @@ class AddressAction(argparse.Action):
 				raise CrowbarExceptions(mess)
 		
 		elif args.brute == "vnckey": 
-			if args.passwd_file is None:
-				mess =  """ Usage: use --help for futher information\ncrowbar.py: error: argument -C/--passwdfile expected one argument """
+			if args.key_file is None:
+				mess =  """ Usage: use --help for futher information\ncrowbar.py: error: argument -k/--key: expected one argument """
 				raise CrowbarExceptions(mess)
 			elif (args.server is None) and (args.server_file is None):
 				mess =  """ Usage: use --help for futher information\ncrowbar.py: error: argument -s/--server or -S/--serverfile expected one argument """

@@ -76,3 +76,9 @@ Attention: If you want, you can specify the key directory with -k option. Crowba
  # cat crowbar.log
 
  # cat crowbar.out
+
+
+#### Thanks To
+ 
+ - Bahtiyar Bircan
+ - Ertuğrul Başaranoğlu

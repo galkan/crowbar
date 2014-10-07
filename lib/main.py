@@ -262,21 +262,21 @@ class Main:
 	
 	
 	
-	def vnclogin(self, ip, port, passwd_file):	
+	def vnclogin(self, ip, port, key_file):	
 
-		vnc_cmd = "%s -passwd %s %s:%s"% (self.vncviewer_path, passwd_file, ip, port)
+		vnc_cmd = "%s -passwd %s %s:%s"% (self.vncviewer_path, key_file, ip, port)
 		proc = subprocess.Popen(shlex.split(vnc_cmd), shell=False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)		
-
-		brute =  "LOG-VNC: " + ip + ":" + str(port) + " -" + passwd_file
+      
+		brute =  "LOG-VNC: " + ip + ":" + str(port) + " -" + key_file
 		self.logger.log_file(brute)
 		for line in iter(proc.stderr.readline, ''):
 			if re.search(self.vnc_success, line):
 				os.kill(proc.pid, signal.SIGQUIT)
-				result = bcolors.OKGREEN + "VNC-SUCCESS: " + bcolors.ENDC +  bcolors.OKBLUE + ip + ":" + str(port) + " - " + passwd_file + bcolors.ENDC
+				result = bcolors.OKGREEN + "VNC-SUCCESS: " + bcolors.ENDC +  bcolors.OKBLUE + ip + ":" + str(port) + " - " + key_file + bcolors.ENDC
 				self.logger.output_file(result)
 				Main.is_success = 1
 				break
-
+		
 
 	def vnckey(self, *options):
 		
@@ -293,10 +293,11 @@ class Main:
 		    self.ip_list = self.nmap.port_scan(self.args.server, port)
 		    
 		
-		if not os.path.isfile(self.args.passwd_file):
-			mess =  "Password file doesn't exists !!!"
+		if not os.path.isfile(self.args.key_file):
+			mess =  "Key file: \"%s\" doesn't exists."% self.args.key_file 
 			raise CrowbarExceptions(mess) 				
-			
+	
+		
 		try:	
 			pool = ThreadPool(int(self.args.thread))
 		except Exception, err:
@@ -304,10 +305,10 @@ class Main:
 
 			
 		for ip in self.ip_list:
-			pool.add_task(self.vnclogin, ip, port, self.args.passwd_file)
+			pool.add_task(self.vnclogin, ip, port, self.args.key_file)
 					
 		pool.wait_completion()
-
+		
 		
 		    
 	def rdplogin(self, ip, user, password, port):

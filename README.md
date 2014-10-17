@@ -15,7 +15,7 @@ Currently **Crowbar** supports
 
 First you shoud install dependencies
 ```
- # apt-get install openvpn freerdp-x11 vncviewer ssh 
+ # apt-get install openvpn freerdp-x11 vncviewer
 ```
 
 Then get latest version from github  
@@ -27,25 +27,42 @@ Attention: Rdp depends on your Kali version. It may be xfreerdp for the latest v
 
 ### Usage
 
-**-s :**
+**-h**: Aracın kullanımı ile ilgili bilgiler listelenir.
+**-b**: Kaba kuvvet saldırısı yapılacak servisin adı (VNC, VPN, SSH, RDP) belirtilir.
+**-s**: Saldırının yapılacağı sunucu IP değerleri belirtilir.
+**-S**: Saldırının yapılacağı sunucu IP değerlerinin bulunduğu dosya belirtilir.
+**-u**: Kullanıcı adı belirtilir.
+**-U**: Kullanıcı adlarının bulunduğu dosya belirtilir.
+**-n**: Kaç thread ile çalışacağının bilgisi belirtilir.
+**-l**: Logların kaydedileceği dosya belirtilir. Varsayılan olarak betiğin bulunduğu crowbar.log dosyasına kaydedilir.
+**-o**: Başarılı tarama sonuçlarının kaydedileceği dosya belirtilir.
+**-c**: Parola belirtilir.
+**-C**: Parolalaların bulunduğu dosya belirtilir.
+**-t**: Her bir taramaya ait thread için zaman aşımı süresi belirtilir.
+**-p**: Saldırının yapılacağı sunucuda çalışan ilgili servisin hizmet verdiği port numarası. Eğer ilgili servis için varsayılan port kullanılıyorsa kullanılmasına gerek yoktur.
+**-k**: Anahtarın disk sistemindeki yeri belirtilir.
+**-m**: VPN için konfigürasyon dosyasının yeri belirtilir.
+**-d**: Nmap taraması gerçekleştirdikten sonra araç çalıştırılır. Böylece büyük ağlarda sadece ilgili servisi çalışan bilgisayarlara kaba kuvvet saldırısı gerçekleştirilir.
+**-v**: Başarısız saldırı denemeleri de dahil olmak üzere ayrıntılı sonuçlar ekrana yazdırılır.
 
-**-S :**
-
-**-u :**
-
-**-U :**
-
-**-c :**
-
-**-C :**
-
-**-p :**
 
 If you want see all usage options, please use crowbar --help 
 
 **Brute forcing RDP**  
 ```
- # ./crowbar.py -b rdp -s 172.16.1.12/32 -u Administrator -c pass.txt  
+crowbar.py -b rdp -s 192.168.2.182/32 -u admin -c Aa123456
+```
+
+```
+crowbar.py -b rdp -s 192.168.2.211/32 -U /root/Desktop/userlist -c passw0rd
+```
+
+```
+crowbar.py -b rdp -s 192.168.2.250/32 -u localuser -C /root/Desktop/passlist
+```
+
+```
+crowbar.py -b rdp -s 192.168.2.0/24 -U /root/Desktop/userlist -C /root/Desktop/passlist -d
 ```
 
 **Brute forcing SSH**  

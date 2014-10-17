@@ -27,22 +27,38 @@ Attention: Rdp depends on your Kali version. It may be xfreerdp for the latest v
 
 ### Usage
 
-**-h**: Aracın kullanımı ile ilgili bilgiler listelenir.
-**-b**: Kaba kuvvet saldırısı yapılacak servisin adı (VNC, VPN, SSH, RDP) belirtilir.
-**-s**: Saldırının yapılacağı sunucu IP değerleri belirtilir.
+**-h**: Shows help menu.
+
+**-b**: Specify the target service
+
+**-s**: Specify the target ip address.
+
 **-S**: Saldırının yapılacağı sunucu IP değerlerinin bulunduğu dosya belirtilir.
-**-u**: Kullanıcı adı belirtilir.
-**-U**: Kullanıcı adlarının bulunduğu dosya belirtilir.
-**-n**: Kaç thread ile çalışacağının bilgisi belirtilir.
-**-l**: Logların kaydedileceği dosya belirtilir. Varsayılan olarak betiğin bulunduğu crowbar.log dosyasına kaydedilir.
+
+**-u**: Specify the username.
+
+**-U**: Specify the file which stores username.
+
+**-n**: Specify the thread count.
+
+**-l**: Specify the file which stores log. Deafault file name is crwobar.log.
+
 **-o**: Başarılı tarama sonuçlarının kaydedileceği dosya belirtilir.
-**-c**: Parola belirtilir.
-**-C**: Parolalaların bulunduğu dosya belirtilir.
+
+**-c**: Specify the password.
+
+**-C**: Specify the file which stores passwords.
+
 **-t**: Her bir taramaya ait thread için zaman aşımı süresi belirtilir.
+
 **-p**: Saldırının yapılacağı sunucuda çalışan ilgili servisin hizmet verdiği port numarası. Eğer ilgili servis için varsayılan port kullanılıyorsa kullanılmasına gerek yoktur.
+
 **-k**: Anahtarın disk sistemindeki yeri belirtilir.
+
 **-m**: VPN için konfigürasyon dosyasının yeri belirtilir.
+
 **-d**: Nmap taraması gerçekleştirdikten sonra araç çalıştırılır. Böylece büyük ağlarda sadece ilgili servisi çalışan bilgisayarlara kaba kuvvet saldırısı gerçekleştirilir.
+
 **-v**: Başarısız saldırı denemeleri de dahil olmak üzere ayrıntılı sonuçlar ekrana yazdırılır.
 
 

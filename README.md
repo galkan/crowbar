@@ -33,7 +33,7 @@ Attention: Rdp depends on your Kali version. It may be xfreerdp for the latest v
 
 **-s**: Specify the target ip address.
 
-**-S**: Saldırının yapılacağı sunucu IP değerlerinin bulunduğu dosya belirtilir.
+**-S**: Specify the file name which is stores target ip address.
 
 **-u**: Specify the username.
 
@@ -41,25 +41,25 @@ Attention: Rdp depends on your Kali version. It may be xfreerdp for the latest v
 
 **-n**: Specify the thread count.
 
-**-l**: Specify the file which stores log. Deafault file name is crwobar.log.
+**-l**: Specify the file which stores log. Deafault file name is crwobar.log which is located in your current directory
 
-**-o**: Başarılı tarama sonuçlarının kaydedileceği dosya belirtilir.
+**-o**: Specify the output file which stores the successfully attempt.
 
 **-c**: Specify the password.
 
 **-C**: Specify the file which stores passwords.
 
-**-t**: Her bir taramaya ait thread için zaman aşımı süresi belirtilir.
+**-t**: specify the timeout value.
 
-**-p**: Saldırının yapılacağı sunucuda çalışan ilgili servisin hizmet verdiği port numarası. Eğer ilgili servis için varsayılan port kullanılıyorsa kullanılmasına gerek yoktur.
+**-p**: 
 
-**-k**: Anahtarın disk sistemindeki yeri belirtilir.
+**-k**: 
 
-**-m**: VPN için konfigürasyon dosyasının yeri belirtilir.
+**-m**: 
 
-**-d**: Nmap taraması gerçekleştirdikten sonra araç çalıştırılır. Böylece büyük ağlarda sadece ilgili servisi çalışan bilgisayarlara kaba kuvvet saldırısı gerçekleştirilir.
+**-d**: 
 
-**-v**: Başarısız saldırı denemeleri de dahil olmak üzere ayrıntılı sonuçlar ekrana yazdırılır.
+**-v**: Specify the verbose mode which is shows all the attempts including fail.
 
 
 If you want see all usage options, please use crowbar --help 

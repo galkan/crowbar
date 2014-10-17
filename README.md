@@ -67,7 +67,15 @@ crowbar.py -b rdp -s 192.168.2.0/24 -U /root/Desktop/userlist -C /root/Desktop/p
 
 **Brute forcing SSH**  
 ```
-# ./crowbar.py -b sshkey -s 127.0.0.1/32 -u root -p 22 -k id_rsa  
+crowbar.py -b sshkey -s 192.168.2.105/32 -u root -k /root/.ssh/id_rsa
+```
+
+```
+crowbar.py -b sshkey -s 192.168.2.105/32 -u root -k /root/.ssh/
+```
+
+```
+crowbar.py -b sshkey -s 192.168.2.0/24 -u root -k /root/.ssh/ -d
 ```
 
 Attention: If you want, you can specify the key directory with -k option. Crowbar will use all the files under this directory for brute force. For instance;
@@ -75,13 +83,15 @@ Attention: If you want, you can specify the key directory with -k option. Crowba
  ``# crowbar.py -k /root/.ssh``
 
 **Brute forcing VNC server**  
+
 ```
-# ./crowbar.py -b vnckey -s 172.16.3.87/32 -p 5901 -c keys/vncpass  
+crowbar.py -b vnckey -s 192.168.2.105/32 -p 5902 -c /root/.vnc/passwd 
 ```
 
 **Brute forcing OpenVPN**  
+
 ```
-# ./crowbar.py -b openvpn -s 172.16.1.100/32 -m server.ovpn -c pass.txt -u user.txt -k server.ca.crt -p 443  
+crowbar.py -b openvpn -s 198.7.62.204/32 -p 443 -m /root/Desktop/vpnbook.ovpn -k /root/Desktop/vpnbook_ca.crt -u vpnbook -c cr2hudaF
 ```
 
 ### Example Output

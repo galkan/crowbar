@@ -122,7 +122,7 @@ Attention: If you want, you can specify the key directory with -k option. Crowba
 Below is the example which you have options for using crowbar.
 
 ```
-crowbar.py -b vnckey -s 192.168.2.105/32 -p 5902 -c /root/.vnc/passwd 
+crowbar.py -b vnckey -s 192.168.2.105/32 -p 5902 -k /root/.vnc/passwd 
 ```
 ![alt tag](https://raw.githubusercontent.com/galkan/crowbar/master/images/crowbar-vnc.jpg)
 

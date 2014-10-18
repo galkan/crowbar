@@ -89,7 +89,7 @@ crowbar.py -b rdp -s 192.168.2.250/32 -u localuser -C /root/Desktop/passlist
 ```
 crowbar.py -b rdp -s 192.168.2.0/24 -U /root/Desktop/userlist -C /root/Desktop/passlist -d
 ```
-![alt tag](https://raw.githubusercontent.com/galkan/crowbar/master/images/crowvar-rdp-dosya2.jpg)
+![alt tag](https://raw.githubusercontent.com/galkan/crowbar/master/images/crowvar-rdp-kadi-parola-dosya.jpg)
 
 
 **Brute forcing SSH**  

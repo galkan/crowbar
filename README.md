@@ -29,45 +29,51 @@ Attention: Rdp depends on your Kali version. It may be xfreerdp for the latest v
 
 **-h**: Shows help menu.
 
-**-b**: Specify the target service
+**-b**: Target service. Crowbar now supports vnckey, openvpn, sshkey, rdp.
 
-**-s**: Specify the target ip address.
+**-s**: Target ip address.
 
-**-S**: Specify the file name which is stores target ip address.
+**-S**: File name which is stores target ip address.
 
-**-u**: Specify the username.
+**-u**: Username.
 
-**-U**: Specify the file which stores username.
+**-U**: File name which stores username.
 
-**-n**: Specify the thread count.
+**-n**: Thread count.
 
-**-l**: Specify the file which stores log. Deafault file name is crwobar.log which is located in your current directory
+**-l**: File name which stores log. Deafault file name is crwobar.log which is located in your current directory
 
-**-o**: Specify the output file which stores the successfully attempt.
+**-o**: Output file name which stores the successfully attempt.
 
-**-c**: Specify the password.
+**-c**: Password.
 
-**-C**: Specify the file which stores passwords.
+**-C**: File name which stores passwords.
 
-**-t**: specify the timeout value.
+**-t**: Timeout value.
 
-**-p**: 
+**-p**: Port number 
 
-**-k**: 
+**-k**: Key file full path. 
 
-**-m**: 
+**-m**: Openvpn configuration file path
 
-**-d**: 
+**-d**: Run nmap in order to discover whether the target port is open or not. So that you can easily brute to target using crowbar. 
 
-**-v**: Specify the verbose mode which is shows all the attempts including fail.
+**-v**: Verbose mode which is shows all the attempts including fail.
 
 
-If you want see all usage options, please use crowbar --help 
+If you want see all usage options, please use **crowbar --help** 
+
 
 **Brute forcing RDP**  
+
+Below are the examples which you have options for using crowbar. 
+
 ```
 crowbar.py -b rdp -s 192.168.2.182/32 -u admin -c Aa123456
 ```
+Above is the simple usage. It takes username and password value. -u specify the username and -c specify the password.
+
 
 ```
 crowbar.py -b rdp -s 192.168.2.211/32 -U /root/Desktop/userlist -c passw0rd
@@ -82,6 +88,9 @@ crowbar.py -b rdp -s 192.168.2.0/24 -U /root/Desktop/userlist -C /root/Desktop/p
 ```
 
 **Brute forcing SSH**  
+
+Below are the examples which you have options for using crowbar.
+
 ```
 crowbar.py -b sshkey -s 192.168.2.105/32 -u root -k /root/.ssh/id_rsa
 ```
@@ -100,11 +109,15 @@ Attention: If you want, you can specify the key directory with -k option. Crowba
 
 **Brute forcing VNC server**  
 
+Below is the example which you have options for using crowbar.
+
 ```
 crowbar.py -b vnckey -s 192.168.2.105/32 -p 5902 -c /root/.vnc/passwd 
 ```
 
 **Brute forcing OpenVPN**  
+
+Below are the example which you have options for using crowbar.
 
 ```
 crowbar.py -b openvpn -s 198.7.62.204/32 -p 443 -m /root/Desktop/vpnbook.ovpn -k /root/Desktop/vpnbook_ca.crt -u vpnbook -c cr2hudaF

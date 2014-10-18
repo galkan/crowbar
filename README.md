@@ -72,8 +72,6 @@ Below are the examples which you have options for using crowbar.
 ```
 crowbar.py -b rdp -s 192.168.2.182/32 -u admin -c Aa123456
 ```
-Above is the simple usage. It takes username and password value. -u specify the username and -c specify the password.
-
 
 ```
 crowbar.py -b rdp -s 192.168.2.211/32 -U /root/Desktop/userlist -c passw0rd
@@ -127,12 +125,7 @@ crowbar.py -b openvpn -s 198.7.62.204/32 -p 443 -m /root/Desktop/vpnbook.ovpn -k
 
  Once you have executed crowbar, it generates 2 files for logging and result. Default log file name is crowbar.log which is    
  located in your current directory. If you don't want use default log file, you should use -l log_path. After that you can   
- observe crowbar operations. For instance;
-
- # cat crowbar.log
-
- # cat crowbar.out
-
+ observe crowbar operations. Please look at the crowbar.log and crowbar. file 
 
 #### Thanks To
  

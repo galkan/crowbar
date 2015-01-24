@@ -24,14 +24,24 @@ class AddressAction(argparse.Action):
   
         def __call__(self, parser, args, values, option = None):
 
-		cmd_list = (args.username, args.passwd, args.server)
-		warning = {args.username:"-U", args.passwd:"-P", args.server:"-S"}
-		
-		for _ in cmd_list:
-		     if _ and os.path.isfile(_):
-			  mess = "%s is not valid option. Please use %s option"% (_,warning[_])
-			  raise CrowbarExceptions(mess)
-        
+		if args.username:
+                        if len(args.username) > 1:
+                                tmp_user = ''
+                                for _ in args.username:
+                                        tmp_user = tmp_user + _ + ' '
+
+                                tmp_user = '"' + tmp_user[:-1] + '"'
+                                args.username = tmp_user
+                        else:   
+                                args.username = args.username[0]
+
+                warning = {args.username:"-U", args.passwd:"-C", args.server:"-S"}
+                for _ in warning.keys():
+                        if _ and os.path.isfile(_):
+                                mess = "%s is not valid option. Please use %s option"% (_, warning[_])
+                                raise CrowbarExceptions(mess)
+
+
         
 		if args.brute == "sshkey":
 			if args.key_file is None:
@@ -111,7 +121,7 @@ class Main:
                 parser.add_argument('-b', '--brute', dest = 'brute', help = 'Brute Force Type', choices = self.services.keys(), required = True)
 		parser.add_argument('-s', '--server', dest = 'server', action = 'store', help = 'Server Ip Address')
 		parser.add_argument('-S', '--serverfile', dest = 'server_file', action = 'store', help = 'Server Ip Address File')
-		parser.add_argument('-u', '--username', dest = 'username', action = 'store', help = 'Username')
+		parser.add_argument('-u', '--username', dest = 'username', action = 'store', nargs='+', help = 'Username')
 		parser.add_argument('-U', '--usernamefile', dest = 'username_file', action = 'store', help = 'Username File')
 		parser.add_argument('-n', '--number', dest = 'thread', action = 'store', help = 'Thread Number', default = 5, type = int)		
 		parser.add_argument('-l', '--log', dest = 'log_file', action = 'store', help = 'Log File', metavar = 'FILE', default = "crowbar.log")				

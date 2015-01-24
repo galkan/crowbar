@@ -368,6 +368,9 @@ class Main:
 				    raise CrowbarExceptions(mess)
 
 				for user in userfile:
+					if ' ' in user:
+                                                user = '"' + user + '"'
+
 					if self.args.passwd_file:
 						try:
 						    passwdfile = open(self.args.passwd_file, "r").read().splitlines()

@@ -70,7 +70,7 @@ If you want see all usage options, please use **crowbar --help**
 
 ```
 # ./crowbar.py -b rdp -u DOMAIN\\gokhan alkan -c Aa123456 -s 10.68.35.150/32 
-2015-03-28 11:03:39 RDP-SUCCESS : 10.68.35.150:3389 - "ornek\gokhan alkan":Aa123456,
+2015-03-28 11:03:39 RDP-SUCCESS : 10.68.35.150:3389 - "DOMAIN\gokhan alkan":Aa123456,
 ```
 
 ```

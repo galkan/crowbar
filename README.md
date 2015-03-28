@@ -66,7 +66,18 @@ If you want see all usage options, please use **crowbar --help**
 
 ![alt tag](https://raw.githubusercontent.com/galkan/crowbar/master/images/crowbar-parola-dosyasi.jpg) 
 
-ATTENTION: If you want to use username with 
+**ATTENTION:** If you want to use username including DOMAIN, please specify username like below. Backslash is the escape character for python. So you can use two formats for achieving this.
+
+```
+# ./crowbar.py -b rdp -u DOMAIN\\gokhan alkan -c Aa123456 -s 10.68.35.150/32 
+2015-03-28 11:03:39 RDP-SUCCESS : 10.68.35.150:3389 - "ornek\gokhan alkan":Aa123456,
+```
+
+```
+# ./crowbar.py -b rdp -u gokhan alkan@ornek -c Aa123456 -s 10.68.35.150/32 
+2015-03-28 11:04:00 RDP-SUCCESS : 10.68.35.150:3389 - "gokhan alkan@DOMAIN":Aa123456,
+```
+
 
 **Brute forcing RDP**  
 

@@ -26,13 +26,8 @@ class AddressAction(argparse.Action):
 
 		if args.username:
                         if len(args.username) > 1:
-                                tmp_user = ''
-                                for _ in args.username:
-                                        tmp_user = tmp_user + _ + ' '
-
-                                tmp_user = '"' + tmp_user[:-1] + '"'
-                                args.username = tmp_user
-                        else:   
+                                args.username = "\"" + ' '.join([str(line) for line in args.username]) + "\""
+                        else:
                                 args.username = args.username[0]
 
                 warning = {args.username:"-U", args.passwd:"-C", args.server:"-S"}

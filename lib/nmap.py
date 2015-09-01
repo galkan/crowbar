@@ -39,7 +39,7 @@ class Nmap:
 		tmpfile = tempfile.NamedTemporaryFile(mode = 'w+t')
 		tmpfile_name = tmpfile.name
 	
-		if not lib:
+		if not self.lib:
 			nmap_scan_option = "-n -Pn -T4 -sS %s --open -p %s --host-timeout=10m --max-rtt-timeout=600ms --initial-rtt-timeout=300ms --min-rtt-timeout=300ms --max-retries=2 --min-rate=150 -oG %s"% (ip_list, port, tmpfile_name)
 	        	run_nmap = "%s %s"% (self.nmap_path, nmap_scan_option)
 	        	proc = subprocess.Popen([run_nmap], shell = True, stdout = subprocess.PIPE,)

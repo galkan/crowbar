@@ -17,10 +17,15 @@ class Nmap:
         def __init__(self):
 	
 		self.nmap_path = "/usr/bin/nmap"
+		self.lib = False
 		
 		if not os.path.exists(self.nmap_path):
-		    mess =  "File: %s doesn't exists !!!"% self.nmap_path
-		    raise CrowbarExceptions(mess)
+		    try:
+		    	import nmap
+		    	self.lib = True
+		    except:
+		    	mess =  "File: %s doesn't exists !!!"% self.nmap_path
+		        raise CrowbarExceptions(mess)
 		    	
 
 	def port_scan(self, ip_list, port):	
@@ -31,11 +36,15 @@ class Nmap:
 		tmpfile = tempfile.NamedTemporaryFile(mode = 'w+t')
 		tmpfile_name = tmpfile.name
 	
-		nmap_scan_option = "-n -Pn -T4 -sS %s --open -p %s --host-timeout=10m --max-rtt-timeout=600ms --initial-rtt-timeout=300ms --min-rtt-timeout=300ms --max-retries=2 --min-rate=150 -oG %s"% (ip_list, port, tmpfile_name)
-	        run_nmap = "%s %s"% (self.nmap_path, nmap_scan_option)
+		if not lib:
+			nmap_scan_option = "-n -Pn -T4 -sS %s --open -p %s --host-timeout=10m --max-rtt-timeout=600ms --initial-rtt-timeout=300ms --min-rtt-timeout=300ms --max-retries=2 --min-rate=150 -oG %s"% (ip_list, port, tmpfile_name)
+	        	run_nmap = "%s %s"% (self.nmap_path, nmap_scan_option)
+	        	proc = subprocess.Popen([run_nmap], shell = True, stdout = subprocess.PIPE,)
+	        	stdout_value = str(proc.communicate())
+	        else:
+	        	nm = nmap.PortScanner()
+	        	nm.scan(hosts = ip_list, arguments = "-n -Pn -T4 -sS --open -p %s --host-timeout=10m --max-rtt-timeout=600ms --initial-rtt-timeout=300ms --min-rtt-timeout=300ms --max-retries=2 --min-rate=150 -oG %s"% (port, tmpfile_name))
 	
-                proc = subprocess.Popen([run_nmap], shell = True, stdout = subprocess.PIPE,)
-                stdout_value = str(proc.communicate())
                
                	try:
 			for line in open(tmpfile_name,"r"):

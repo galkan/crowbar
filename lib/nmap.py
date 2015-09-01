@@ -23,7 +23,10 @@ class Nmap:
 		    try:
 		    	import nmap
 		    	self.lib = True
-		    except:
+		    except ImportError:
+		    	mess =  "Please install nmap module !!!"	
+		    	raise CrowbarExceptions(mess)
+		    except:	
 		    	mess =  "File: %s doesn't exists !!!"% self.nmap_path
 		        raise CrowbarExceptions(mess)
 		    	

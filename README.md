@@ -41,7 +41,7 @@ Attention: Rdp depends on your Kali version. It may be xfreerdp for the latest v
 
 **-n**: Thread count.
 
-**-l**: File name which stores log. Deafault file name is crwobar.log which is located in your current directory
+**-l**: File name which stores log. Default file name is crwobar.log which is located in your current directory
 
 **-o**: Output file name which stores the successfully attempt.
 

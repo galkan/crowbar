@@ -1,5 +1,9 @@
 ## Crowbar (Levye) - Brute forcing tool for pentests
- 
+
+### Videos
+https://www.youtube.com/watch?v=4QZAWGsveSM&list=PL1BVM6VWlmWZOv9Hv8TV2v-kAlUmvA5g7&index=1
+https://www.youtube.com/watch?v=i_byBBlpZoE&list=PL1BVM6VWlmWZOv9Hv8TV2v-kAlUmvA5g7&index=2
+https://www.youtube.com/watch?v=IOSUpAFaL6E&list=PL1BVM6VWlmWZOv9Hv8TV2v-kAlUmvA5g7&index=3
 
 ### What is it?
 

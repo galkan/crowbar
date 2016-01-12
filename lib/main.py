@@ -196,7 +196,7 @@ class Main:
                 port = 443
 
                 if not os.path.exists(self.openvpn_path):
-                        mess =  "openvpn: %s path doesn't exists on the system !!!"% (self.openvpn_path)
+                        mess =  "openvpn: %s path doesn't exists on the system !!!" % os.path.abspath(self.openvpn_path)
                         raise CrowbarExceptions(mess)
 
                 if self.args.port is not None:
@@ -223,7 +223,7 @@ class Main:
 				try:
 				    userfile = open(self.args.username_file, "r").read().splitlines()
                                 except:
-				    mess = "File: %s doesn't exists !!!"% self.args.username_file
+				    mess = "File: %s doesn't exists !!!" % os.path.abspath(self.args.username_file)
 				    raise CrowbarExceptions(mess)
 				  
                                 for user in userfile:
@@ -231,7 +231,7 @@ class Main:
 						try:
 						    passwdfile = open(self.args.passwd_file, "r").read().splitlines()
                                                 except:
-						    mess = "File: %s doesn't exists !!!"% self.args.passwd_file
+						    mess = "File: %s doesn't exists !!!" % os.path.abspath(self.args.passwd_file)
 						    raise CrowbarExceptions(mess) 
 						    
                                                 for password in passwdfile:
@@ -249,7 +249,7 @@ class Main:
 					try:
 					    passwdfile = open(self.args.passwd_file, "r").read().splitlines()
                                         except:
-					    mess =  "File: %s doesn't exists !!!"% self.args.passwd_file
+					    mess =  "File: %s doesn't exists !!!" % os.path.abspath(self.args.passwd_file)
 					    raise CrowbarExceptions(mess) 
 
                                         for password in passwdfile:
@@ -288,7 +288,7 @@ class Main:
 		port = 5901
 		
 		if not os.path.exists(self.vncviewer_path):
-			mess =  "vncviewer: %s path doesn't exists on the system !!!"% (self.vncviewer_path)
+			mess =  "vncviewer: %s path doesn't exists on the system !!!" % os.path.abspath(self.vncviewer_path)
 			raise CrowbarExceptions(mess)
 
 		if self.args.port is not None:
@@ -299,7 +299,7 @@ class Main:
 		    
 		
 		if not os.path.isfile(self.args.key_file):
-			mess =  "Key file: \"%s\" doesn't exists."% self.args.key_file 
+			mess =  "Key file: \"%s\" doesn't exists." % os.path.abspath(self.args.key_file)
 			raise CrowbarExceptions(mess) 				
 	
 		
@@ -339,7 +339,7 @@ class Main:
 		port = 3389
 
 		if not os.path.exists(self.xfreerdp_path):
-			mess = "xfreerdp: %s path doesn't exists on the system !!!"% (self.xfreerdp_path)
+			mess = "xfreerdp: %s path doesn't exists on the system !!!" % os.path.abspath(self.xfreerdp_path)
 			raise CrowbarExceptions(mess)
 
 		if self.args.port is not None:
@@ -359,7 +359,7 @@ class Main:
 				try:
 				    userfile = open(self.args.username_file, "r").read().splitlines()
 				except:
-				    mess =  "File: %s doesn't exists !!!"% self.args.username_file
+				    mess =  "File: %s doesn't exists !!!" % os.path.abspath(self.args.username_file)
 				    raise CrowbarExceptions(mess)
 
 				for user in userfile:
@@ -370,7 +370,7 @@ class Main:
 						try:
 						    passwdfile = open(self.args.passwd_file, "r").read().splitlines()
 						except:
-						    mess =  "File: %s doesn't exists"% self.args.passwd_file  
+						    mess =  "File: %s doesn't exists" % os.path.abspath(self.args.passwd_file)
 						    raise CrowbarExceptions(mess)
 
 						for password in passwdfile:
@@ -382,7 +382,7 @@ class Main:
 					try:
 					    passwdfile = open(self.args.passwd_file, "r").read().splitlines()
 					except:
-					    mess =  "File: %s doesn't exists"% self.args.passwd_file  
+					    mess =  "File: %s doesn't exists" % os.path.abspath(self.args.passwd_file)
 					    raise CrowbarExceptions(mess)
 					    
 					for password in passwdfile:
@@ -431,7 +431,7 @@ class Main:
 			raise CrowbarExceptions(str(err))
 
 		if not os.path.exists(self.args.key_file):
-			mess =  "Key file/folder: \"%s\" doesn't exists."% self.args.key_file
+			mess =  "Key file/folder: \"%s\" doesn't exists." % os.path.abspath(self.args.key_file)
 			raise CrowbarExceptions(mess)
 		
 		for ip in self.ip_list:
@@ -439,7 +439,7 @@ class Main:
 				try:
 				    userfile = open(self.args.username_file, "r").read().splitlines()
 				except:
-				    mess =  "File: %s doesn't exists !!!"% self.args.username_file
+				    mess =  "File: %s doesn't exists !!!" % os.path.abspath(self.args.username_file)
 				    raise CrowbarExceptions(mess)
 				    
 				for user in userfile:

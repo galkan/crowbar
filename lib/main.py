@@ -451,7 +451,7 @@ class Main:
 				if os.path.isdir(self.args.key_file):
 					for dirname, dirnames, filenames in os.walk(self.args.key_file):
 						for keyfile in filenames:
-							keyfile_path = self.args.key_file + "/" + keyfile						
+							keyfile_path = dirname + "/" + keyfile						
 							pool.add_task(self.sshlogin, ip, port, self.args.username, keyfile_path, self.args.timeout)
 				else:
 					pool.add_task(self.sshlogin, ip, port, self.args.username, self.args.key_file, self.args.timeout)

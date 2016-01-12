@@ -19,6 +19,8 @@ except Exception, err:
 	from lib.core.exceptions import CrowbarExceptions
         raise CrowbarExceptions(str(err))
 
+__version__ = '0.3.4-dev'
+__banner__  = 'Crowbar v%s' % (__version__)
         
 class AddressAction(argparse.Action):
   
@@ -129,6 +131,7 @@ class Main:
 		parser.add_argument('-m', '--config', dest = 'config', action = 'store', help = 'Configuration File')
 		parser.add_argument('-d', '--discover', dest = 'discover', action = 'store_true', help = '', default = None)
 		parser.add_argument('-v', '--verbose', dest = 'verbose', action = 'store_true', help = '', default = None)
+		parser.add_argument('-q', '--quiet', dest = 'quiet', action = 'store_true', help = '', default = None)
 		
 		parser.add_argument('options', nargs = '*', action = AddressAction)
 
@@ -157,7 +160,7 @@ class Main:
 			mess =  "File: %s cannot be opened !!!"% self.args.server_file
 			raise CrowbarExceptions(mess)
 		    except:
-			mess =  "InvalidIPAddress !!! Please try to use IP/CIDR notation <192.168.37.37/32, 192.168.1.0/24>"
+			mess =  "Invalid IP Address!!! Please try to use IP/CIDR notation <192.168.37.37/32, 192.168.1.0/24>"
 			raise CrowbarExceptions(mess)
 		
 		
@@ -167,6 +170,12 @@ class Main:
 		    self.logger = Logger(self.args.log_file, self.args.output)
 		    
 		self.logger.log_file("START")
+		if not self.args.quiet:
+			self.logger.output_file(__banner__) 
+			
+		self.logger.output_file("Brute Force Type: %s" % self.args.brute) 
+		self.logger.output_file("     Output File: %s" % os.path.abspath(self.args.output))
+		self.logger.output_file("        Log File: %s" % os.path.abspath(self.args.log_file))
 		
 
 
@@ -182,7 +191,7 @@ class Main:
                 self.logger.log_file(brute)
                 for line in iter(proc.stdout.readline, ''):
                         if re.search(self.vpn_success, line):
-                                result = bcolors.OKGREEN + "VPN-SUCCESS: " + bcolors.ENDC + bcolors.OKBLUE + host + " - " + username + ":" + password + bcolors.ENDC
+                                result = bcolors.OKGREEN + "OPENVPN-SUCCESS: " + bcolors.ENDC + bcolors.OKBLUE + host + " - " + username + ":" + password + bcolors.ENDC
                                 self.logger.output_file(result)
                                 Main.is_success = 1
                                 os.kill(proc.pid, signal.SIGQUIT)
@@ -408,7 +417,7 @@ class Main:
 		  
 		    try:
 			ssh.connect(ip, port, username = user, password = None, pkey = None, key_filename = keyfile, timeout = timeout, allow_agent = False, look_for_keys = False)
-			result = bcolors.OKGREEN + "SSH-SUCCESS : " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(port) + " - " + user + ":" + keyfile + bcolors.ENDC
+			result = bcolors.OKGREEN + "SSH-SUCCESS: " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(port) + " - " + user + ":" + keyfile + bcolors.ENDC
 			self.logger.output_file(result)
 			Main.is_success = 1
 		    except:
@@ -432,6 +441,9 @@ class Main:
 	
 		
 		for ip in self.ip_list:
+			if not self.args.quiet:
+				self.logger.output_file("Trying %s:%s" % (ip, port))
+			
 			if self.args.username_file:
 				try:
 				    userfile = open(self.args.username_file, "r").read().splitlines()
@@ -472,11 +484,11 @@ class Main:
 			self.logger.log_file("STOP")
 		      
 			if Main.is_success == 0:
-			    print "No result is found ..."
+			    self.logger.output_file("No results found...")
 			    
 			  
 			  
 	def signal_handler(self, signal, frame):
 
-        	raise CrowbarExceptions("Exit ...")
+        	raise CrowbarExceptions("Exit...")
         	

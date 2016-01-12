@@ -172,10 +172,11 @@ class Main:
 		self.logger.log_file("START")
 		if not self.args.quiet:
 			self.logger.output_file(__banner__) 
-			
-		self.logger.output_file("Brute Force Type: %s" % self.args.brute) 
-		self.logger.output_file("     Output File: %s" % os.path.abspath(self.args.output))
-		self.logger.output_file("        Log File: %s" % os.path.abspath(self.args.log_file))
+		
+		if self.args.verbose:	
+			self.logger.output_file("Brute Force Type: %s" % self.args.brute) 
+			self.logger.output_file("     Output File: %s" % os.path.abspath(self.args.output))
+			self.logger.output_file("        Log File: %s" % os.path.abspath(self.args.log_file))
 		
 
 
@@ -228,6 +229,9 @@ class Main:
                                 
 
                 for ip in self.ip_list:
+			if not self.args.quiet:
+				self.logger.output_file("Trying %s:%s" % (ip, port))
+				
                         if self.args.username_file:
 				try:
 				    userfile = open(self.args.username_file, "r").read().splitlines()
@@ -319,6 +323,9 @@ class Main:
 
 			
 		for ip in self.ip_list:
+			if not self.args.quiet:
+				self.logger.output_file("Trying %s:%s" % (ip, port))
+				
 			pool.add_task(self.vnclogin, ip, port, self.args.key_file)
 					
 		pool.wait_completion()
@@ -364,6 +371,9 @@ class Main:
 			raise CrowbarExceptions(str(err))
 
 		for ip in self.ip_list:
+			if not self.args.quiet:
+				self.logger.output_file("Trying %s:%s" % (ip, port))
+				
 			if self.args.username_file:
 				try:
 				    userfile = open(self.args.username_file, "r").read().splitlines()

@@ -429,7 +429,10 @@ class Main:
 			pool = ThreadPool(self.args.thread)
 		except Exception, err:
 			raise CrowbarExceptions(str(err))
-	
+
+		if not os.path.exists(self.args.key_file):
+			mess =  "Key file/folder: \"%s\" doesn't exists."% self.args.key_file
+			raise CrowbarExceptions(mess)
 		
 		for ip in self.ip_list:
 			if self.args.username_file:

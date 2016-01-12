@@ -451,7 +451,10 @@ class Main:
 				if os.path.isdir(self.args.key_file):
 					for dirname, dirnames, filenames in os.walk(self.args.key_file):
 						for keyfile in filenames:
-							keyfile_path = dirname + "/" + keyfile						
+							keyfile_path = dirname + "/" + keyfile
+							if keyfile.endswith('.pub',4):
+								self.logger.log_file("LOG-SSH: Skipping Public Key - %s" % keyfile_path)
+								continue					
 							pool.add_task(self.sshlogin, ip, port, self.args.username, keyfile_path, self.args.timeout)
 				else:
 					pool.add_task(self.sshlogin, ip, port, self.args.username, self.args.key_file, self.args.timeout)

@@ -229,6 +229,7 @@ Once you have executed Crowbar, it generates 2 files for logging and result that
 
 - Bahtiyar Bircan
 - Ertuğrul Başaranoğlu
+- G0tmi1k
 
 
 

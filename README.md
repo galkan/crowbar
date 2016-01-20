@@ -70,6 +70,8 @@ Note: The RDP client depends on your OS. Debian 7/8 & Kali 1/2 uses `freerdp-x11
 
 **-v**: Enable verbose mode (shows all the attempts)
 
+**-q**: Enable quiet mode (only show successful logins)
+
 If you want see all usage options, please use: `./crowbar.py --help`.
 
 - - -

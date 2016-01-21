@@ -97,7 +97,7 @@ class Main:
         self.vpn_remote_regex = re.compile("^\s+remote\s[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\s[0-9]{1,3}")
         self.vpn_warning = "Warning! Both \"remote\" options were used at the same time. But command line \"remote\" options will be used!"
 
-        self.xfreerdp_path = "/usr/bin/freerdp-x11"
+        self.xfreerdp_path = "/usr/bin/xfreerdp"
         self.rdp_success = "Authentication only, exit status 0"
         self.rdp_display_error = "Please check that the \$DISPLAY environment variable is properly set."
 
@@ -306,8 +306,8 @@ class Main:
         pool.wait_completion()
 
     def rdplogin(self, ip, user, password, port):
-        rdp_cmd = "%s /sec:nla /p:%s /u:%s /port:%s /v:%s +auth-only /cert-ignore" % (
-            self.xfreerdp_path, password, user, port, ip)
+        rdp_cmd = "%s /v:%s /port:%s /u:%s /p:%s /cert-ignore +auth-only" % (
+            self.xfreerdp_path, ip, port, user, password)
         proc = subprocess.Popen(shlex.split(rdp_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         brute = "LOG-RDP: " + ip + ":" + str(port) + " - " + user + ":" + password

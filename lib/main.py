@@ -181,11 +181,11 @@ class Main:
             self.openvpn_path, self.args.config, brute_file_name, host, port)
         proc = subprocess.Popen(shlex.split(openvpn_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        brute = "LOG-OPENVPN: " + host + ":" + username + " - " + password + ":" + brute_file_name
+        brute = "LOG-OPENVPN: " + host + ":" + port + " - " + username + ":" + password + " - " + brute_file_name
         self.logger.log_file(brute)
         for line in iter(proc.stdout.readline, ''):
             if re.search(self.vpn_success, line):
-                result = bcolors.OKGREEN + "OPENVPN-SUCCESS: " + bcolors.ENDC + bcolors.OKBLUE + host + " - " + username + ":" + password + bcolors.ENDC
+                result = bcolors.OKGREEN + "OPENVPN-SUCCESS: " + bcolors.ENDC + bcolors.OKBLUE + host + ":" + port + " - " + username + ":" + password + bcolors.ENDC
                 self.logger.output_file(result)
                 Main.is_success = 1
                 os.kill(proc.pid, signal.SIGQUIT)

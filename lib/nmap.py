@@ -20,7 +20,7 @@ class Nmap:
                 import nmap
                 self.lib = False
             except ImportError:
-                mess = "Please install the pyhon-nmap module (pip install nmap)!"
+                mess = "Please install the python-nmap module (pip install nmap)!"
                 raise CrowbarExceptions(mess)
             except:
                 mess = "File: %s doesn't exists!" % self.nmap_path

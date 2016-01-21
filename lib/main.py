@@ -34,54 +34,51 @@ class AddressAction(argparse.Action):
             warning = {args.username: "-U", args.passwd: "-C", args.server: "-S"}
             for _ in warning.keys():
                 if _ and os.path.isfile(_):
-                    mess = "%s is not valid option. Please use %s option" % (_, warning[_])
+                    mess = "%s is not a valid option. Please use %s option" % (_, warning[_])
                     raise CrowbarExceptions(mess)
 
         if args.brute == "sshkey":
             if args.key_file is None:
-                mess = """ Usage: use --help for futher information\ncrowbar.py: error: argument -k/--key: expected one argument """
+                mess = """ Usage: use --help for further information\ncrowbar.py: error: argument -k/--key: expected one argument """
                 raise CrowbarExceptions(mess)
             elif (args.username is None) and (args.username_file is None):
-                mess = """ Usage: use --help for futher information\ncrowbar.py: error: argument -u/--username or -U/--usernamefile expected one argument """
+                mess = """ Usage: use --help for further information\ncrowbar.py: error: argument -u/--username or -U/--username_file expected one argument """
                 raise CrowbarExceptions(mess)
             elif (args.server is None) and (args.server_file is None):
-                mess = """ Usage: use --help for futher information\ncrowbar.py: error: argument -s/--server or -S/--serverfile expected one argument """
+                mess = """ Usage: use --help for further information\ncrowbar.py: error: argument -s/--server or -S/--server_file expected one argument """
                 raise CrowbarExceptions(mess)
 
         elif args.brute == "rdp":
             if (args.username is None) and (args.username_file is None):
-                mess = """ Usage: use --help for futher information\ncrowbar.py: error: argument -u/--username or -U/--usernamefile expected one argument """
+                mess = """ Usage: use --help for further information\ncrowbar.py: error: argument -u/--username or -U/--username_file expected one argument """
                 raise CrowbarExceptions(mess)
             elif (args.passwd is None) and (args.passwd_file is None):
-                mess = """ Usage: use --help for futher information\ncrowbar.py: error: argument -c/--passwd or -C/--passwdfile expected one argument """
+                mess = """ Usage: use --help for further information\ncrowbar.py: error: argument -c/--passwd or -C/--passwdfile expected one argument """
                 raise CrowbarExceptions(mess)
             elif (args.server is None) and (args.server_file is None):
-                mess = """ Usage: use --help for futher information\ncrowbar.py: error: argument -s/--server or -S/--serverfile expected one argument """
+                mess = """ Usage: use --help for further information\ncrowbar.py: error: argument -s/--server or -S/--server_file expected one argument """
                 raise CrowbarExceptions(mess)
 
         elif args.brute == "vnckey":
             if args.key_file is None:
-                mess = """ Usage: use --help for futher information\ncrowbar.py: error: argument -k/--key: expected one argument """
+                mess = """ Usage: use --help for further information\ncrowbar.py: error: argument -k/--key: expected one argument """
                 raise CrowbarExceptions(mess)
             elif (args.server is None) and (args.server_file is None):
-                mess = """ Usage: use --help for futher information\ncrowbar.py: error: argument -s/--server or -S/--serverfile expected one argument """
+                mess = """ Usage: use --help for further information\ncrowbar.py: error: argument -s/--server or -S/--server_file expected one argument """
                 raise CrowbarExceptions(mess)
 
         elif args.brute == "openvpn":
             if args.config is None:
-                mess = """ Usage: use --help for futher information\ncrowbar.py: error: argument -m/--config expected one argument """
+                mess = """ Usage: use --help for further information\ncrowbar.py: error: argument -m/--config expected one argument """
                 raise CrowbarExceptions(mess)
             elif (args.server is None) and (args.server_file is None):
-                mess = """ Usage: use --help for futher information\ncrowbar.py: error: argument -s/--server or -S/--serverfile expected one argument """
+                mess = """ Usage: use --help for further information\ncrowbar.py: error: argument -s/--server or -S/--server_file expected one argument """
                 raise CrowbarExceptions(mess)
             elif (args.username is None) and (args.username_file is None):
-                mess = """ Usage: use --help for futher information\ncrowbar.py: error: argument -u/--username or -U/--usernamefile expected one argument """
+                mess = """ Usage: use --help for further information\ncrowbar.py: error: argument -u/--username or -U/--username_file expected one argument """
                 raise CrowbarExceptions(mess)
             elif (args.passwd is None) and (args.passwd_file is None):
-                mess = """ Usage: use --help for futher information\ncrowbar.py: error: argument -c/--passwd or -C/--passwdfile expected one argument """
-                raise CrowbarExceptions(mess)
-            elif args.key_file is None:
-                mess = """ Usage: use --help for futher information\ncrowbar.py: error: argument -k/--key_file expected one argument """
+                mess = """ Usage: use --help for further information\ncrowbar.py: error: argument -c/--passwd or -C/--passwdfile expected one argument """
                 raise CrowbarExceptions(mess)
 
 class Main:
@@ -104,30 +101,32 @@ class Main:
         self.vncviewer_path = "/usr/bin/vncviewer"
         self.vnc_success = "Authentication successful"
 
-        description = "Crowbar is a brute force tool which is support openvpn, rdp, sshkey, vnckey."
-        usage = "Usage: use --help for futher information"
+        description = "Crowbar is a brute force tool which supports OpenVPN, Remote Desktop Protocol, SSH Private Keys and VNC Keys."
+        usage = "Usage: use --help for further information"
 
         parser = argparse.ArgumentParser(description=description, usage=usage)
-        parser.add_argument('-b', '--brute', dest='brute', help='Brute Force Type', choices=self.services.keys(),
+        parser.add_argument('-b', '--brute', dest='brute', help='Target service', choices=self.services.keys(),
                             required=True)
-        parser.add_argument('-s', '--server', dest='server', action='store', help='Server IP Address')
-        parser.add_argument('-S', '--serverfile', dest='server_file', action='store', help='Server IP Address File')
-        parser.add_argument('-u', '--username', dest='username', action='store', nargs='+', help='Username')
-        parser.add_argument('-U', '--usernamefile', dest='username_file', action='store', help='Username File')
-        parser.add_argument('-n', '--number', dest='thread', action='store', help='Thread Number', default=5, type=int)
-        parser.add_argument('-l', '--log', dest='log_file', action='store', help='Log File', metavar='FILE',
+        parser.add_argument('-s', '--server', dest='server', action='store', help='Static target')
+        parser.add_argument('-S', '--serverfile', dest='server_file', action='store', help='Multiple targets stored in a file')
+        parser.add_argument('-u', '--username', dest='username', action='store', nargs='+', help='Static name to login with')
+        parser.add_argument('-U', '--usernamefile', dest='username_file', action='store', help='Multiple names to login with, stored in a file')
+        parser.add_argument('-n', '--number', dest='thread', action='store', help='Number of threads to be active at once', default=5, type=int)
+        parser.add_argument('-l', '--log', dest='log_file', action='store', help='Log file (only write attempts)', metavar='FILE',
                             default="crowbar.log")
-        parser.add_argument('-o', '--output', dest='output', action='store', help='Output File', metavar='FILE',
+        parser.add_argument('-o', '--output', dest='output', action='store', help='Output file (write everything else)', metavar='FILE',
                             default="crowbar.out")
-        parser.add_argument('-c', '--passwd', dest='passwd', action='store', help='Password')
-        parser.add_argument('-C', '--passwdfile', dest='passwd_file', action='store', help='Password File', metavar='FILE')
-        parser.add_argument('-t', '--timeout', dest='timeout', action='store', help='Timeout Value', default=2, type=int)
-        parser.add_argument('-p', '--port', dest='port', action='store', help='Service Port Number', type=int)
-        parser.add_argument('-k', '--key', dest='key_file', action='store', help='Key File')
-        parser.add_argument('-m', '--config', dest='config', action='store', help='Configuration File')
-        parser.add_argument('-d', '--discover', dest='discover', action='store_true', help='', default=None)
-        parser.add_argument('-v', '--verbose', dest='verbose', action='store_true', help='', default=None)
-        parser.add_argument('-q', '--quiet', dest='quiet', action='store_true', help='', default=None)
+        parser.add_argument('-c', '--passwd', dest='passwd', action='store', help='Static password to login with')
+        parser.add_argument('-C', '--passwdfile', dest='passwd_file', action='store', help='Multiple passwords to login with, stored in a file',
+                            metavar='FILE')
+        parser.add_argument('-t', '--timeout', dest='timeout', action='store', help='[SSH] How long to wait for each thread (seconds)', default=10, type=int)
+        parser.add_argument('-p', '--port', dest='port', action='store', help='Alter the port if the service is not using the default value', type=int)
+        parser.add_argument('-k', '--keyfile', dest='key_file', action='store', help='[SSH/VNC] (Private) Key file or folder containing multiple files')
+        parser.add_argument('-m', '--config', dest='config', action='store', help='[OpenVPN] Configuration file ')
+        parser.add_argument('-d', '--discover', dest='discover', action='store_true', help='Port scan before attacking open ports', default=False)
+        parser.add_argument('-v', '--verbose', dest='verbose', action="count", help='Enable verbose output (-vv for more)', default=False)
+        parser.add_argument('-D', '--debug', dest='debug', action='store_true', help='Enable debug mode', default=False)
+        parser.add_argument('-q', '--quiet', dest='quiet', action='store_true', help='Only display successful logins', default=False)
         parser.add_argument('options', nargs='*', action=AddressAction)
 
         try:
@@ -164,7 +163,7 @@ class Main:
         else:
             self.logger = Logger(self.args.log_file, self.args.output)
 
-        self.logger.log_file("START")
+        self.logger.output_file("START")
         if not self.args.quiet:
             self.logger.output_file(__banner__)
 
@@ -172,27 +171,34 @@ class Main:
             self.logger.output_file("Brute Force Type: %s" % self.args.brute)
             self.logger.output_file("     Output File: %s" % os.path.abspath(self.args.output))
             self.logger.output_file("        Log File: %s" % os.path.abspath(self.args.log_file))
+            self.logger.output_file("   Discover Mode: %s" % self.args.discover)
+            self.logger.output_file("    Verbose Mode: %s" % self.args.verbose)
+            self.logger.output_file("      Debug Mode: %s" % self.args.debug)
 
-    def openvpnlogin(self, host, username, password, brute_file, port):
+    def openvpnlogin(self, ip, username, password, brute_file, port):
         brute_file_name = brute_file.name
         brute_file.seek(0)
 
-        openvpn_cmd = "%s --config %s --auth-user-pass %s --remote %s %s" % (
-            self.openvpn_path, self.args.config, brute_file_name, host, port)
+        openvpn_cmd = "%s --remote %s %s --auth-user-pass %s --tls-exit --connect-retry-max 0 --config %s" % (
+            self.openvpn_path, ip, port, brute_file_name, self.args.config)
+        if self.args.verbose == 2:
+            self.logger.output_file("CMD: %s" % openvpn_cmd)
         proc = subprocess.Popen(shlex.split(openvpn_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        brute = "LOG-OPENVPN: " + host + ":" + port + " - " + username + ":" + password + " - " + brute_file_name
+        brute = "LOG-OPENVPN: " + ip + ":" + str(port) + " - " + username + ":" + password + " - " + brute_file_name
         self.logger.log_file(brute)
         for line in iter(proc.stdout.readline, ''):
+            if self.args.debug:
+                self.logger.output_file(line.rstrip())
             if re.search(self.vpn_success, line):
-                result = bcolors.OKGREEN + "OPENVPN-SUCCESS: " + bcolors.ENDC + bcolors.OKBLUE + host + ":" + port + " - " + username + ":" + password + bcolors.ENDC
+                result = bcolors.OKGREEN + "OPENVPN-SUCCESS: " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(port) + " - " + username + ":" + password + bcolors.ENDC
                 self.logger.output_file(result)
                 Main.is_success = 1
                 os.kill(proc.pid, signal.SIGQUIT)
         brute_file.close()
 
     def openvpn(self):
-        port = 443
+        port = 443    #TCP 443, TCP 943, UDP 1194
 
         if not os.path.exists(self.openvpn_path):
             mess = "openvpn: %s path doesn't exists on the system!" % os.path.abspath(self.openvpn_path)
@@ -202,6 +208,8 @@ class Main:
             port = self.args.port
 
         if self.args.discover:
+            if not self.args.quiet:
+                self.logger.output_file("Discovery mode - port scanning: %s" % self.args.server)
             self.ip_list = self.nmap.port_scan(self.args.server, port)
 
         try:
@@ -262,17 +270,21 @@ class Main:
                     pool.add_task(self.openvpnlogin, ip, self.args.username, self.args.passwd, brute_file, port)
         pool.wait_completion()
 
-    def vnclogin(self, ip, port, key_file):
-        vnc_cmd = "%s -passwd %s %s:%s" % (self.vncviewer_path, key_file, ip, port)
+    def vnclogin(self, ip, port, keyfile):
+        vnc_cmd = "%s -passwd %s %s:%s" % (self.vncviewer_path, keyfile, ip, port)
+        if self.args.verbose == 2:
+            self.logger.output_file("CMD: %s" % vnc_cmd)
         proc = subprocess.Popen(shlex.split(vnc_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        brute = "LOG-VNC: " + ip + ":" + str(port) + " -" + key_file
+        brute = "LOG-VNC: " + ip + ":" + str(port) + " - " + keyfile
         self.logger.log_file(brute)
         for line in iter(proc.stderr.readline, ''):
+            if self.args.debug:
+                self.logger.output_file(line.rstrip())
             if re.search(self.vnc_success, line):
                 os.kill(proc.pid, signal.SIGQUIT)
                 result = bcolors.OKGREEN + "VNC-SUCCESS: " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(
-                    port) + " - " + key_file + bcolors.ENDC
+                    port) + " - " + keyfile + bcolors.ENDC
                 self.logger.output_file(result)
                 Main.is_success = 1
                 break
@@ -288,6 +300,8 @@ class Main:
             port = self.args.port
 
         if self.args.discover:
+            if not self.args.quiet:
+                self.logger.output_file("Discovery mode - port scanning: %s" % self.args.server)
             self.ip_list = self.nmap.port_scan(self.args.server, port)
 
         if not os.path.isfile(self.args.key_file):
@@ -308,14 +322,18 @@ class Main:
     def rdplogin(self, ip, user, password, port):
         rdp_cmd = "%s /v:%s /port:%s /u:%s /p:%s /cert-ignore +auth-only" % (
             self.xfreerdp_path, ip, port, user, password)
+        if self.args.verbose == 2:
+            self.logger.output_file("CMD: %s" % rdp_cmd)
         proc = subprocess.Popen(shlex.split(rdp_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         brute = "LOG-RDP: " + ip + ":" + str(port) + " - " + user + ":" + password
         self.logger.log_file(brute)
         for line in iter(proc.stderr.readline, ''):
+            if self.args.debug:
+                self.logger.output_file(line.rstrip())
             if re.search(self.rdp_success, line):
                 result = bcolors.OKGREEN + "RDP-SUCCESS : " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(
-                    port) + " - " + user + ":" + password + "," + bcolors.ENDC
+                    port) + " - " + user + ":" + password + bcolors.ENDC
                 self.logger.output_file(result)
                 Main.is_success = 1
                 break
@@ -334,6 +352,8 @@ class Main:
             port = self.args.port
 
         if self.args.discover:
+            if not self.args.quiet:
+                self.logger.output_file("Discovery mode - port scanning: %s" % self.args.server)
             self.ip_list = self.nmap.port_scan(self.args.server, port)
 
         try:
@@ -409,6 +429,8 @@ class Main:
             port = self.args.port
 
         if self.args.discover:
+            if not self.args.quiet:
+                self.logger.output_file("Discovery mode - port scanning: %s" % self.args.server)
             self.ip_list = self.nmap.port_scan(self.args.server, port)
 
         try:
@@ -437,7 +459,7 @@ class Main:
                             for keyfile in filenames:
                                 keyfile_path = self.args.key_file + "/" + keyfile
                             if keyfile.endswith('.pub', 4):
-                                self.logger.log_file("LOG-SSH: Skipping Public Key - %s" % keyfile_path)
+                                self.logger.output_file("LOG-SSH: Skipping Public Key - %s" % keyfile_path)
                                 continue
                             pool.add_task(self.sshlogin, ip, port, user, keyfile_path, self.args.timeout)
                     else:
@@ -448,7 +470,7 @@ class Main:
                         for keyfile in filenames:
                             keyfile_path = dirname + "/" + keyfile
                             if keyfile.endswith('.pub', 4):
-                                self.logger.log_file("LOG-SSH: Skipping Public Key - %s" % keyfile_path)
+                                self.logger.output_file("LOG-SSH: Skipping Public Key - %s" % keyfile_path)
                                 continue
                             pool.add_task(self.sshlogin, ip, port, self.args.username, keyfile_path, self.args.timeout)
                 else:
@@ -459,11 +481,11 @@ class Main:
         signal.signal(signal.SIGINT, self.signal_handler)
 
         if not brute_type in self.services.keys():
-            mess = "%s is not valid service. Please select %s " % (brute_type, self.services.keys())
+            mess = "%s is not a valid service. Please select: %s" % (brute_type, self.services.keys())
             raise CrowbarExceptions(mess)
         else:
             self.services[brute_type]()
-            self.logger.log_file("STOP")
+            self.logger.output_file("STOP")
 
             if Main.is_success == 0:
                 self.logger.output_file("No results found...")

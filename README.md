@@ -32,7 +32,13 @@ Then get latest version from GitHub:
 # git clone https://github.com/galkan/crowbar
 ```
 
-Note: The RDP client depends on your OS. Debian 7/8 & Kali 1/2 uses `freerdp-x11`. Else you can try `xfreerdp` (Will need to edit the screen to point to the new binary).
+Note: The RDP client package depends on your OS:
+
++ Debian 7/8 & Kali 1/2 uses `freerdp-x11` package.
++ Else you can try `xfreerdp`.
++ Else you may need to compile & tweak `freerdp` by following: http://opentechnotes.blogspot.co.uk/2015/02/compile-headless-freerdp-credential-checking.html
+
+_Don't forget to edit the script to point to the new binary_!
 
 ### Usage
 

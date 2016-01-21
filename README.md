@@ -1,4 +1,4 @@
-## Crowbar (Levye) - Brute forcing tool
+## Crowbar - Brute forcing tool
 
 ### Demonstration Videos
 
@@ -42,41 +42,43 @@ _Don't forget to edit the script to point to the new binary_!
 
 ### Usage
 
+**-b**: Target service. Crowbar supports: `openvpn`, `rdp`, `sshkey`, `vnckey`
+
+**-c**: Static password to login with
+
+**-C**: `</path/to/file>` for passwords list
+
+**-d**: Run a tcp port scan (nmap) on the IP range (`-s`/`-S`) before trying to brute force. This will discover whether the target's port is open.
+
+**-D**: Enable debug mode
+
 **-h**: Shows a help menu
 
-**-b**: Target service. Crowbar supports: `openvpn`, `rdp`, `sshkey`, `vnckey`.
+**-k**: `</path/to/file-or-folder>` for key files (for SSH or VNC)
+
+**-l**: `</path/to/file>` to store the log file (default is `./crowbar.log`)
+
+**-m**: `</path/to/file>` for a OpenVPN configuration file
+
+**-n**: Thread count
+
+**-o**: `</path/to/file>` to store the successfully attempt(s) (default is `./crowbar.out`)
+
+**-p**: Port number (if the service is not on the default port)
+
+**-q**: Enable quiet mode (only show successful logins)
 
 **-s**: Target IP address/range (in CIDR notation)
 
 **-S**: `</path/to/file>` which is stores target IP addresses
 
+**-t**: Timeout value
+
 **-u**: Single username
 
 **-U**: `</path/to/file>` which stores the username list
 
-**-n**: Thread count
-
-**-l**: `</path/to/file>` to store the log file (default is `./crowbar.log`)
-
-**-o**: `</path/to/file>` to store the successfully attempt(s) (default is `./crowbar.out`)
-
-**-c**: Static password
-
-**-C**: `</path/to/file>` for passwords list
-
-**-t**: Timeout value
-
-**-p**: Port number (if the service is not on the default port)
-
-**-k**: `</path/to/file-or-folder>` for key files (for SSH or VNC)
-
-**-m**: `</path/to/file>` for a OpenVPN configuration file
-
-**-d**: Run nmap on the IP range (in `-s`/`-S`) in order to discover whether the targets has an open port or not. This allows for multiple targets to be easily brute forced using Crowbar
-
 **-v**: Enable verbose mode (shows all the attempts)
-
-**-q**: Enable quiet mode (only show successful logins)
 
 If you want see all usage options, please use: `./crowbar.py --help`.
 

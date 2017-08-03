@@ -147,10 +147,11 @@ class Main:
                         for ip in iprange.iprange(_):
                             self.ip_list.append(ip)
                 else:
-                    for _ in open(self.args.server_file, "r"):
-                        for ip in iprange.iprange(_):
-                            if not ip in self.ip_list:
-                                self.ip_list.append(ip)
+                    with open(self.args.server_file, "r") as fd:
+                        for cidr in fd.read().split(","):
+                            for ip in iprange.iprange(cidr):
+                                if not ip in self.ip_list:
+                                    self.ip_list.append(ip)
             except IOError:
                 mess = "File: %s cannot be opened!" % os.path.abspath(self.args.server_file)
                 raise CrowbarExceptions(mess)

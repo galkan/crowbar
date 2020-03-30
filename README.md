@@ -17,13 +17,26 @@ Currently **Crowbar** supports:
 - SSH private key authentication (`-b sshkey`)
 - VNC key authentication (`-b vpn`)
 
-
 ### Installation
 
-Install all the dependencies:
+**Kali Linux users can do**
 
 ```
-# apt-get -y install openvpn freerdp-x11 vncviewer
+# sudo apt install -y crowbar
+```
+
+Else if you wish to install from source, install all the dependencies:
+
+**Debain 9/10+ & Kali Rolling**
+
+```
+# apt install -y nmap openvpn freerdp2-x11 tigervnc-viewer
+```
+
+**Debain 7/8 & Kali 1/2**
+
+```
+# apt-get install -y nmap openvpn freerdp-x11 vncviewer
 ```
 
 Then get latest version from GitHub:
@@ -34,11 +47,12 @@ Then get latest version from GitHub:
 
 Note: The RDP client package depends on your OS:
 
++ Debain 9/10 & Kali Rolling uses `freerdp2-x11`
 + Debian 7/8 & Kali 1/2 uses `freerdp-x11` package.
 + Else you can try `xfreerdp`.
-+ Else you may need to compile & tweak `freerdp` by following: http://opentechnotes.blogspot.co.uk/2015/02/compile-headless-freerdp-credential-checking.html
++ The fall back method would be to compile & tweak `freerdp` by following: http://opentechnotes.blogspot.co.uk/2015/02/compile-headless-freerdp-credential-checking.html
 
-_Don't forget to edit the script to point to the new binary_!
+_Don't forget to patch `./lib/main.py` to point to the new binary_!
 
 ### Usage
 
@@ -96,13 +110,9 @@ If you want see all usage options, please use: `./crowbar.py --help`.
 2015-03-28 11:04:00 RDP-SUCCESS : 10.68.35.150:3389 - "gokhan alkan@DOMAIN":Aa123456,
 ```
 
-
-
 #### Brute Forcing Remote Desktop Protocol (RDP)
 
 Below are a few examples of attacking RDP using Crowbar.
-
-
 
 RDP brute forcing a single IP address using a single username and a single password:
 
@@ -112,117 +122,93 @@ RDP brute forcing a single IP address using a single username and a single passw
 
 ![](https://raw.githubusercontent.com/galkan/crowbar/master/images/crowbar-rdp.jpg)
 
-
 - - -
-
 
 RDP brute forcing a single IP address using username list file and a single password:
 
 ```
-# ./crowbar.py -b rdp -s 192.168.2.211/32 -U /root/Desktop/userlist -c passw0rd
+# ./crowbar.py -b rdp -s 192.168.2.211/32 -U ~/Desktop/userlist -c passw0rd
 ```
 
 ![](https://raw.githubusercontent.com/galkan/crowbar/master/images/crowvar-rdp-dosya.jpg)
 
-
 - - -
-
 
 RDP brute forcing a single IP address using a single username and a password list:
 
 ```
-# ./crowbar.py -b rdp -s 192.168.2.250/32 -u localuser -C /root/Desktop/passlist
+# ./crowbar.py -b rdp -s 192.168.2.250/32 -u localuser -C ~/Desktop/passlist
 ```
 
 ![](https://raw.githubusercontent.com/galkan/crowbar/master/images/crowvar-rdp-dosya2.jpg)
 
-
 - - -
-
 
 RDP brute forcing a subnet using a username list and a password list in discovery mode:
 
 ```
-# ./crowbar.py -b rdp -s 192.168.2.0/24 -U /root/Desktop/userlist -C /root/Desktop/passlist -d
+# ./crowbar.py -b rdp -s 192.168.2.0/24 -U ~/Desktop/userlist -C ~/Desktop/passlist -d
 ```
 
 ![](https://raw.githubusercontent.com/galkan/crowbar/master/images/crowvar-rdp-kadi-parola-dosya.jpg)
 
-
 - - -
-
 
 #### Brute Forcing SSH Private Keys
 
 Below are a few examples which you have using Crowbar.
 
-
-
 SSH key brute force attempt to a single IP address using a single username and a single private SSH key:
 
 ```
-# ./crowbar.py -b sshkey -s 192.168.2.105/32 -u root -k /root/.ssh/id_rsa
+# ./crowbar.py -b sshkey -s 192.168.2.105/32 -u root -k ~/.ssh/id_rsa
 ```
 
 ![](https://raw.githubusercontent.com/galkan/crowbar/master/images/crowbar-ssh1.jpg)
 
-
 - - -
-
 
 SSH key brute force attempt to a single IP address using a single username and all the SSH keys in a folder:
 
 ```
-# ./crowbar.py -b sshkey -s 192.168.2.105/32 -u root -k /root/.ssh/
+# ./crowbar.py -b sshkey -s 192.168.2.105/32 -u root -k ~/.ssh/
 ```
 
 ![](https://raw.githubusercontent.com/galkan/crowbar/master/images/crowbar-ssh2.jpg)
 
-
 - - -
-
 
 SSH key brute force attempt to a subnet using a single username and all the SSH keys in a folder in discovery mode:
 
 ```
-# ./crowbar.py -b sshkey -s 192.168.2.0/24 -u root -k /root/.ssh/ -d
+# ./crowbar.py -b sshkey -s 192.168.2.0/24 -u root -k ~/.ssh/ -d
 ```
 
 ![](https://raw.githubusercontent.com/galkan/crowbar/master/images/crowbar-ssh3.jpg)
-
-
 
 #### Brute Forcing VNC
 
 Below is an example of attacking a VNC service using Crowbar.
 
-
-
 VNC brute force attempt to a single IP address using a password file with specified port number:
 
 ```
-# ./crowbar.py -b vnckey -s 192.168.2.105/32 -p 5902 -k /root/.vnc/passwd
+# ./crowbar.py -b vnckey -s 192.168.2.105/32 -p 5902 -k ~/.vnc/passwd
 ```
 
 ![](https://raw.githubusercontent.com/galkan/crowbar/master/images/crowbar-vnc.jpg)
-
-
 
 ### Brute Forcing OpenVPN
 
 Below is an example of attacking OpenVPN using Crowbar.
 
-
-
 OpenVPN brute force attempt to a single IP address using a configuration file, a certificate file, a single username and a single password with specified port number:
 
 ```
-# ./crowbar.py -b openvpn -s 198.7.62.204/32 -p 443 -m /root/Desktop/vpnbook.ovpn -k /root/Desktop/vpnbook_ca.crt -u vpnbook -c cr2hudaF
+# ./crowbar.py -b openvpn -s 198.7.62.204/32 -p 443 -m ~/Desktop/vpnbook.ovpn -k ~/Desktop/vpnbook_ca.crt -u vpnbook -c cr2hudaF
 ```
 
 ![](https://raw.githubusercontent.com/galkan/crowbar/master/images/crowbar-vpn.jpg)
-
-
 
 - - -
 
@@ -230,16 +216,13 @@ OpenVPN brute force attempt to a single IP address using a configuration file, a
 
 Once you have executed Crowbar, it generates 2 files for logging and result that are located in your current directory. Default log file name is `crowbar.log` which stores all brute force attempts while execution. If you don't want use default log file, you should use `-l log_path`. The second file is `crowbar.out` which stores successful attempts while execution. If you don't want use default output file, you should use `-o output_path`. After that you can observe Crowbar operations.
 
-
 - - -
 
 ### Thanks To
 
 - Bahtiyar Bircan
 - Ertuğrul Başaranoğlu
-- G0tmi1k
-
-
+- [g0tmi1k](https://twitter.com/g0tmi1k)
 
 - - -
 

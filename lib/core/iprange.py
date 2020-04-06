@@ -3,8 +3,9 @@ try:
     import sys
     import socket
     import struct
+    from functools import reduce
     from lib.core.exceptions import CrowbarExceptions
-except Exceptions, err:
+except Exception as err:
     from lib.core.exceptions import CrowbarExceptions
 
     raise CrowbarExceptions(str(err))
@@ -23,7 +24,7 @@ class IpRange:
 
     def ipaddr_to_binary(self, ipaddr):
         q = ipaddr.split('.')
-        return reduce(lambda a, b: long(a) * 256 + long(b), q)
+        return reduce(lambda a, b: int(a) * 256 + int(b), q)
 
     def binary_to_ipaddr(self, ipbinary):
         return socket.inet_ntoa(struct.pack('!I', ipbinary))
@@ -66,11 +67,11 @@ class IpRange:
             b = b + 1
 
     def cidr_iprange(self, ipaddr, cidrmask):
-        mask = (long(2) ** long(32 - long(cidrmask))) - 1
+        mask = (int(2) ** int(32 - int(cidrmask))) - 1
         b = self.ipaddr_to_binary(ipaddr)
         e = self.ipaddr_to_binary(ipaddr)
-        b = long(b & ~mask)
-        e = long(e | mask)
+        b = int(b & ~mask)
+        e = int(e | mask)
         while (b <= e):
             yield self.binary_to_ipaddr(b)
             b = b + 1

@@ -1,9 +1,9 @@
 try:
     import sys
-    from Queue import Queue
+    from queue import Queue
     from threading import Thread
     from lib.core.exceptions import CrowbarExceptions
-except Exception, err:
+except Exception as err:
     from lib.core.exceptions import CrowbarExceptions
 
     raise CrowbarExceptions(str(err))

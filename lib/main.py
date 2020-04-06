@@ -14,12 +14,12 @@ try:
     from lib.core.threadpool import ThreadPool
     from lib.core.exceptions import CrowbarExceptions
     from lib.core.iprange import IpRange, InvalidIPAddress
-except Exception, err:
+except Exception as err:
     from lib.core.exceptions import CrowbarExceptions
 
     raise CrowbarExceptions(str(err))
 
-__version__ = '0.3.5-dev'
+__version__ = '0.3.6-dev'
 __banner__ = 'Crowbar v%s' % (__version__)
 
 class AddressAction(argparse.Action):
@@ -131,7 +131,7 @@ class Main:
 
         try:
             self.args = parser.parse_args()
-        except Exception, err:
+        except Exception as err:
             raise CrowbarExceptions(str(err))
 
         self.ip_list = []
@@ -214,7 +214,7 @@ class Main:
 
         try:
             pool = ThreadPool(int(self.args.thread))
-        except Exception, err:
+        except Exception as err:
             raise CrowbarExceptions(str(err))
 
         for config_line in open(self.args.config, "r"):
@@ -310,7 +310,7 @@ class Main:
 
         try:
             pool = ThreadPool(int(self.args.thread))
-        except Exception, err:
+        except Exception as err:
             raise CrowbarExceptions(str(err))
 
         for ip in self.ip_list:
@@ -358,7 +358,7 @@ class Main:
 
         try:
             pool = ThreadPool(int(self.args.thread))
-        except Exception, err:
+        except Exception as err:
             raise CrowbarExceptions(str(err))
 
         for ip in self.ip_list:
@@ -435,7 +435,7 @@ class Main:
 
         try:
             pool = ThreadPool(self.args.thread)
-        except Exception, err:
+        except Exception as err:
             raise CrowbarExceptions(str(err))
 
         if not os.path.exists(self.args.key_file):

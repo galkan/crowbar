@@ -2,7 +2,7 @@ try:
     import logging
     import os.path
     from lib.core.exceptions import CrowbarExceptions
-except Exception, err:
+except Exception as err:
     from lib.core.exceptions import CrowbarExceptions
 
     raise CrowbarExceptions(str(err))

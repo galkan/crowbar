@@ -5,7 +5,7 @@ try:
     import tempfile
     import subprocess
     from lib.core.exceptions import CrowbarExceptions
-except Exception, err:
+except Exception as err:
     from lib.core.exceptions import CrowbarExceptions
 
     raise CrowbarExceptions(str(err))
@@ -20,7 +20,7 @@ class Nmap:
                 import nmap
                 self.lib = False
             except ImportError:
-                mess = "Please install the python-nmap module (pip install nmap)!"
+                mess = "Please install the python3-nmap module (pip3 install nmap)!"
                 raise CrowbarExceptions(mess)
             except:
                 mess = "File: %s doesn't exists!" % self.nmap_path
@@ -34,17 +34,24 @@ class Nmap:
         tmpfile = tempfile.NamedTemporaryFile(mode='w+t')
         tmpfile_name = tmpfile.name
 
+        if os.geteuid() != 0:
+            nmap_scan_type = "-sT"
+        else:
+            nmap_scan_type = "-sS"
+
+        nmap_scan_option = "-n -Pn -T4 %s --open -p %s --host-timeout=10m --max-rtt-timeout=600ms --initial-rtt-timeout=300ms --min-rtt-timeout=300ms --max-retries=2 --min-rate=150 -oG %s" % (
+                nmap_scan_type, port, tmpfile_name)
+
         if self.lib:
-            nmap_scan_option = "-n -Pn -T4 -sS %s --open -p %s --host-timeout=10m --max-rtt-timeout=600ms --initial-rtt-timeout=300ms --min-rtt-timeout=300ms --max-retries=2 --min-rate=150 -oG %s" % (
-                ip_list, port, tmpfile_name)
+            nmap_scan_option = "%s %s" % (
+                ip_list, nmap_scan_option)
             run_nmap = "%s %s" % (self.nmap_path, nmap_scan_option)
             proc = subprocess.Popen([run_nmap], shell=True, stdout=subprocess.PIPE, )
             stdout_value = str(proc.communicate())
         else:
             nm = nmap.PortScanner()
             nm.scan(hosts=ip_list,
-                    arguments="-n -Pn -T4 -sS --open -p %s --host-timeout=10m --max-rtt-timeout=600ms --initial-rtt-timeout=300ms --min-rtt-timeout=300ms --max-retries=2 --min-rate=150 -oG %s" % (
-                        port, tmpfile_name))
+                    arguments=nmap_scan_option)
 
         try:
             for line in open(tmpfile_name, "r"):
@@ -52,5 +59,5 @@ class Nmap:
                     ip = line[:-1].split(" ")[1]
                     result.append(ip)
             return result
-        except Exception, err:
+        except Exception as err:
             raise CrowbarExceptions(str(err))

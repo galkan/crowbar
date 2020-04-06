@@ -96,6 +96,8 @@ class Main:
 
         self.xfreerdp_path = "/usr/bin/xfreerdp"
         self.rdp_success = "Authentication only, exit status 0"
+        self.rdp_success_ins_priv = "insufficient access privileges"
+        self.rdp_success_account_locked = "alert internal error"
         self.rdp_display_error = "Please check that the \$DISPLAY environment variable is properly set."
 
         self.vncviewer_path = "/usr/bin/vncviewer"
@@ -322,6 +324,7 @@ class Main:
     def rdplogin(self, ip, user, password, port):
         rdp_cmd = "%s /v:%s /port:%s /u:%s /p:%s /cert-ignore +auth-only" % (
             self.xfreerdp_path, ip, port, user, password)
+
         if self.args.verbose == 2:
             self.logger.output_file("CMD: %s" % rdp_cmd)
         proc = subprocess.Popen(shlex.split(rdp_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -333,6 +336,18 @@ class Main:
                 self.logger.output_file(line.rstrip())
             if re.search(self.rdp_success, line):
                 result = bcolors.OKGREEN + "RDP-SUCCESS : " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(
+                    port) + " - " + user + ":" + password + bcolors.ENDC
+                self.logger.output_file(result)
+                Main.is_success = 1
+                break
+            elif re.search(self.rdp_success_ins_priv, line):
+                result = bcolors.OKGREEN + "RDP-SUCCESS (INSUFFICIENT PRIVILEGES) : " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(
+                    port) + " - " + user + ":" + password + bcolors.ENDC
+                self.logger.output_file(result)
+                Main.is_success = 1
+                break
+            elif re.search(self.rdp_success_account_locked, line):
+                result = bcolors.OKGREEN + "RDP-SUCCESS (ACCOUNT_LOCKED_OR_PASSWORD_EXPIRED) : " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(
                     port) + " - " + user + ":" + password + bcolors.ENDC
                 self.logger.output_file(result)
                 Main.is_success = 1

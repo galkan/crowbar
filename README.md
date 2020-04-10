@@ -1,11 +1,5 @@
 ## Crowbar - Brute forcing tool
 
-### Demonstration Videos
-
-https://www.youtube.com/watch?v=4QZAWGsveSM&list=PL1BVM6VWlmWZOv9Hv8TV2v-kAlUmvA5g7&index=1
-https://www.youtube.com/watch?v=i_byBBlpZoE&list=PL1BVM6VWlmWZOv9Hv8TV2v-kAlUmvA5g7&index=2
-https://www.youtube.com/watch?v=IOSUpAFaL6E&list=PL1BVM6VWlmWZOv9Hv8TV2v-kAlUmvA5g7&index=3
-
 ### What is Crowbar?
 
 **Crowbar** (formally known as Levye) is a brute forcing tool that can be used during penetration tests. It was developed to brute force some protocols in a different manner according to other popular brute forcing tools. As an example, while most brute forcing tools use username and password for SSH brute force, Crowbar uses SSH key(s). This allows for any private keys that have been obtained during penetration tests, to be used to attack other SSH servers.
@@ -110,7 +104,12 @@ If you want see all usage options, please use: `./crowbar.py --help`.
 2015-03-28 11:04:00 RDP-SUCCESS : 10.68.35.150:3389 - "gokhan alkan@DOMAIN":Aa123456,
 ```
 
-#### Brute Forcing Remote Desktop Protocol (RDP)
+### Demonstration Videos
+
+- https://www.youtube.com/watch?v=4QZAWGsveSM
+
+
+### Brute Forcing - Remote Desktop Protocol (RDP)
 
 Below are a few examples of attacking RDP using Crowbar.
 
@@ -154,7 +153,7 @@ RDP brute forcing a subnet using a username list and a password list in discover
 
 - - -
 
-#### Brute Forcing SSH Private Keys
+### Brute Forcing - SSH Private Keys
 
 Below are a few examples which you have using Crowbar.
 
@@ -186,7 +185,9 @@ SSH key brute force attempt to a subnet using a single username and all the SSH 
 
 ![](https://raw.githubusercontent.com/galkan/crowbar/master/images/crowbar-ssh3.jpg)
 
-#### Brute Forcing VNC
+- - -
+
+### Brute Forcing - VNC
 
 Below is an example of attacking a VNC service using Crowbar.
 
@@ -198,7 +199,9 @@ VNC brute force attempt to a single IP address using a password file with specif
 
 ![](https://raw.githubusercontent.com/galkan/crowbar/master/images/crowbar-vnc.jpg)
 
-### Brute Forcing OpenVPN
+- - -
+
+### Brute Forcing - OpenVPN
 
 Below is an example of attacking OpenVPN using Crowbar.
 
@@ -222,7 +225,7 @@ Once you have executed Crowbar, it generates 2 files for logging and result that
 
 - Bahtiyar Bircan
 - Ertuğrul Başaranoğlu
-- [g0tmi1k](https://twitter.com/g0tmi1k)
+- [g0tmi1k](https://blog.g0tmi1k.com/)
 
 - - -
 

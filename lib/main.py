@@ -19,7 +19,7 @@ except Exception as err:
 
     raise CrowbarExceptions(str(err))
 
-__version__ = '0.4.0'
+__version__ = '0.4.1-dev'
 __banner__ = 'Crowbar v%s' % (__version__)
 
 class AddressAction(argparse.Action):

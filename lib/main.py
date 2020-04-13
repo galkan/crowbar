@@ -22,6 +22,7 @@ except Exception as err:
 __version__ = '0.4.1-dev'
 __banner__ = 'Crowbar v%s' % (__version__)
 
+
 class AddressAction(argparse.Action):
     def __call__(self, parser, args, values, option=None):
 
@@ -81,6 +82,7 @@ class AddressAction(argparse.Action):
                 mess = """ Usage: use --help for further information\ncrowbar.py: error: argument -c/--passwd or -C/--passwdfile expected one argument """
                 raise CrowbarExceptions(mess)
 
+
 class Main:
     is_success = 0
 
@@ -110,25 +112,38 @@ class Main:
         parser.add_argument('-b', '--brute', dest='brute', help='Target service', choices=self.services.keys(),
                             required=True)
         parser.add_argument('-s', '--server', dest='server', action='store', help='Static target')
-        parser.add_argument('-S', '--serverfile', dest='server_file', action='store', help='Multiple targets stored in a file')
-        parser.add_argument('-u', '--username', dest='username', action='store', nargs='+', help='Static name to login with')
-        parser.add_argument('-U', '--usernamefile', dest='username_file', action='store', help='Multiple names to login with, stored in a file')
-        parser.add_argument('-n', '--number', dest='thread', action='store', help='Number of threads to be active at once', default=5, type=int)
-        parser.add_argument('-l', '--log', dest='log_file', action='store', help='Log file (only write attempts)', metavar='FILE',
+        parser.add_argument('-S', '--serverfile', dest='server_file', action='store',
+                            help='Multiple targets stored in a file')
+        parser.add_argument('-u', '--username', dest='username', action='store', nargs='+',
+                            help='Static name to login with')
+        parser.add_argument('-U', '--usernamefile', dest='username_file', action='store',
+                            help='Multiple names to login with, stored in a file')
+        parser.add_argument('-n', '--number', dest='thread', action='store',
+                            help='Number of threads to be active at once', default=5, type=int)
+        parser.add_argument('-l', '--log', dest='log_file', action='store', help='Log file (only write attempts)',
+                            metavar='FILE',
                             default="crowbar.log")
-        parser.add_argument('-o', '--output', dest='output', action='store', help='Output file (write everything else)', metavar='FILE',
+        parser.add_argument('-o', '--output', dest='output', action='store', help='Output file (write everything else)',
+                            metavar='FILE',
                             default="crowbar.out")
         parser.add_argument('-c', '--passwd', dest='passwd', action='store', help='Static password to login with')
-        parser.add_argument('-C', '--passwdfile', dest='passwd_file', action='store', help='Multiple passwords to login with, stored in a file',
+        parser.add_argument('-C', '--passwdfile', dest='passwd_file', action='store',
+                            help='Multiple passwords to login with, stored in a file',
                             metavar='FILE')
-        parser.add_argument('-t', '--timeout', dest='timeout', action='store', help='[SSH] How long to wait for each thread (seconds)', default=10, type=int)
-        parser.add_argument('-p', '--port', dest='port', action='store', help='Alter the port if the service is not using the default value', type=int)
-        parser.add_argument('-k', '--keyfile', dest='key_file', action='store', help='[SSH/VNC] (Private) Key file or folder containing multiple files')
+        parser.add_argument('-t', '--timeout', dest='timeout', action='store',
+                            help='[SSH] How long to wait for each thread (seconds)', default=10, type=int)
+        parser.add_argument('-p', '--port', dest='port', action='store',
+                            help='Alter the port if the service is not using the default value', type=int)
+        parser.add_argument('-k', '--keyfile', dest='key_file', action='store',
+                            help='[SSH/VNC] (Private) Key file or folder containing multiple files')
         parser.add_argument('-m', '--config', dest='config', action='store', help='[OpenVPN] Configuration file ')
-        parser.add_argument('-d', '--discover', dest='discover', action='store_true', help='Port scan before attacking open ports', default=False)
-        parser.add_argument('-v', '--verbose', dest='verbose', action="count", help='Enable verbose output (-vv for more)', default=False)
+        parser.add_argument('-d', '--discover', dest='discover', action='store_true',
+                            help='Port scan before attacking open ports', default=False)
+        parser.add_argument('-v', '--verbose', dest='verbose', action="count",
+                            help='Enable verbose output (-vv for more)', default=False)
         parser.add_argument('-D', '--debug', dest='debug', action='store_true', help='Enable debug mode', default=False)
-        parser.add_argument('-q', '--quiet', dest='quiet', action='store_true', help='Only display successful logins', default=False)
+        parser.add_argument('-q', '--quiet', dest='quiet', action='store_true', help='Only display successful logins',
+                            default=False)
         parser.add_argument('options', nargs='*', action=AddressAction)
 
         try:
@@ -193,14 +208,15 @@ class Main:
             if self.args.debug:
                 self.logger.output_file(line.rstrip())
             if re.search(self.vpn_success, line):
-                result = bcolors.OKGREEN + "OPENVPN-SUCCESS: " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(port) + " - " + username + ":" + password + bcolors.ENDC
+                result = bcolors.OKGREEN + "OPENVPN-SUCCESS: " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(
+                    port) + " - " + username + ":" + password + bcolors.ENDC
                 self.logger.output_file(result)
                 Main.is_success = 1
                 os.kill(proc.pid, signal.SIGQUIT)
         brute_file.close()
 
     def openvpn(self):
-        port = 443    #TCP 443, TCP 943, UDP 1194
+        port = 443  # TCP 443, TCP 943, UDP 1194
 
         if not os.path.exists(self.openvpn_path):
             mess = "openvpn: %s path doesn't exists on the system!" % os.path.abspath(self.openvpn_path)

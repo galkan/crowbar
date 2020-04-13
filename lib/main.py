@@ -19,7 +19,7 @@ except Exception as err:
 
     raise CrowbarExceptions(str(err))
 
-__version__ = '0.4.1-dev'
+__version__ = '0.4.1'
 __banner__ = 'Crowbar v%s' % (__version__)
 
 

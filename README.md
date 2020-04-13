@@ -207,10 +207,15 @@ VNC brute force attempt to a single IP address using a password file with specif
 
 Below is an example of attacking OpenVPN using Crowbar.
 
-OpenVPN brute force attempt to a single IP address using a configuration file, a certificate file, a single username and a single password with specified port number:
+OpenVPN brute force attempt to a single IP address using a configuration file, a single username and a single password with specified port number and optional certificate file. Doesn't matter if its TCP or UDP:
 
 ```
-# ./crowbar.py -b openvpn -s 198.7.62.204/32 -p 443 -m ~/Desktop/vpnbook.ovpn -k ~/Desktop/vpnbook_ca.crt -u vpnbook -c cr2hudaF
+# grep remote ~/Desktop/vpnbook.ovpn
+remote vpn.example.com 1194 udp
+# host vpn.example.com | awk '{print $1}'
+198.7.62.204
+# grep '^auth-user-pass' ~/Desktop/vpnbook.ovpn
+# ./crowbar.py -b openvpn -s 198.7.62.204/32 -p 1194 -m ~/Desktop/vpnbook.ovpn -k ~/Desktop/vpnbook_ca.crt -u vpnbook -c cr2hudaF
 ```
 
 ![](https://raw.githubusercontent.com/galkan/crowbar/master/images/crowbar-vpn.jpg)

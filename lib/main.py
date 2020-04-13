@@ -95,12 +95,14 @@ class Main:
         self.vpn_success = re.compile("Initialization Sequence Completed")
         self.vpn_remote_regex = re.compile("^\s+remote\s[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\s[0-9]{1,3}")
         self.vpn_warning = "Warning! Both \"remote\" options were used at the same time. But command line \"remote\" options will be used!"
+        self.vpn_error_in_use = "Address already in use (errno=98)"
 
         self.xfreerdp_path = "/usr/bin/xfreerdp"
         self.rdp_success = "Authentication only, exit status 0"
         self.rdp_success_ins_priv = "insufficient access privileges"
         self.rdp_success_account_locked = "alert internal error"
-        self.rdp_display_error = "Please check that the \$DISPLAY environment variable is properly set."
+        self.rdp_error_host_down = "ERRCONNECT_CONNECT_FAILED"  # [0x00020006] [0x00020014]
+        self.rdp_error_display = "Please check that the \$DISPLAY environment variable is properly set."
 
         self.vncviewer_path = "/usr/bin/vncviewer"
         self.vnc_success = "Authentication successful"
@@ -198,25 +200,40 @@ class Main:
 
         openvpn_cmd = "%s --remote %s %s --auth-user-pass %s --tls-exit --connect-retry-max 0 --config %s" % (
             self.openvpn_path, ip, port, brute_file_name, self.args.config)
+
         if self.args.verbose == 2:
             self.logger.output_file("CMD: %s" % openvpn_cmd)
-        proc = subprocess.Popen(shlex.split(openvpn_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        proc = subprocess.Popen(shlex.split(openvpn_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         brute = "LOG-OPENVPN: " + ip + ":" + str(port) + " - " + username + ":" + password + " - " + brute_file_name
         self.logger.log_file(brute)
-        for line in iter(proc.stdout.readline, ''):
+
+        # For every line out
+        for line in proc.stdout:
+            # Is debug enabled
             if self.args.debug:
-                self.logger.output_file(line.rstrip())
-            if re.search(self.vpn_success, line):
+                self.logger.output_file(line.decode("utf-8").rstrip())
+
+            # Success
+            if re.search(self.vpn_success, str(line)):
                 result = bcolors.OKGREEN + "OPENVPN-SUCCESS: " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(
                     port) + " - " + username + ":" + password + bcolors.ENDC
                 self.logger.output_file(result)
                 Main.is_success = 1
                 os.kill(proc.pid, signal.SIGQUIT)
+            # Errors
+            elif re.search(self.vpn_error_in_use, str(line)):
+                mess = "Already connected to a VPN"
+                raise CrowbarExceptions(mess)
         brute_file.close()
 
     def openvpn(self):
         port = 443  # TCP 443, TCP 943, UDP 1194
+
+        if not 'SUDO_UID' in os.environ.keys():
+            mess = "OpenVPN requires super user privileges"
+            raise CrowbarExceptions(mess)
 
         if not os.path.exists(self.openvpn_path):
             mess = "openvpn: %s path doesn't exists on the system!" % os.path.abspath(self.openvpn_path)
@@ -290,16 +307,22 @@ class Main:
 
     def vnclogin(self, ip, port, keyfile):
         vnc_cmd = "%s -passwd %s %s:%s" % (self.vncviewer_path, keyfile, ip, port)
+
         if self.args.verbose == 2:
             self.logger.output_file("CMD: %s" % vnc_cmd)
-        proc = subprocess.Popen(shlex.split(vnc_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        proc = subprocess.Popen(shlex.split(vnc_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         brute = "LOG-VNC: " + ip + ":" + str(port) + " - " + keyfile
         self.logger.log_file(brute)
-        for line in iter(proc.stderr.readline, ''):
+
+        # For every line out
+        for line in proc.stdout:
+            # Is debug enabled
             if self.args.debug:
-                self.logger.output_file(line.rstrip())
-            if re.search(self.vnc_success, line):
+                self.logger.output_file(line.decode("utf-8").rstrip())
+
+            if re.search(self.vnc_success, str(line)):
                 os.kill(proc.pid, signal.SIGQUIT)
                 result = bcolors.OKGREEN + "VNC-SUCCESS: " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(
                     port) + " - " + keyfile + bcolors.ENDC
@@ -343,33 +366,44 @@ class Main:
 
         if self.args.verbose == 2:
             self.logger.output_file("CMD: %s" % rdp_cmd)
-        proc = subprocess.Popen(shlex.split(rdp_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # stderr to stdout
+        proc = subprocess.Popen(shlex.split(rdp_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         brute = "LOG-RDP: " + ip + ":" + str(port) + " - " + user + ":" + password
         self.logger.log_file(brute)
-        for line in iter(proc.stderr.readline, ''):
+
+        # For every line out
+        for line in proc.stdout:
+            # Is debug enabled
             if self.args.debug:
-                self.logger.output_file(line.rstrip())
-            if re.search(self.rdp_success, line):
+                self.logger.output_file(line.decode("utf-8").rstrip())
+
+            # Success
+            if re.search(self.rdp_success, str(line)):
                 result = bcolors.OKGREEN + "RDP-SUCCESS : " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(
                     port) + " - " + user + ":" + password + bcolors.ENDC
                 self.logger.output_file(result)
                 Main.is_success = 1
                 break
-            elif re.search(self.rdp_success_ins_priv, line):
+            elif re.search(self.rdp_success_ins_priv, str(line)):
                 result = bcolors.OKGREEN + "RDP-SUCCESS (INSUFFICIENT PRIVILEGES) : " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(
                     port) + " - " + user + ":" + password + bcolors.ENDC
                 self.logger.output_file(result)
                 Main.is_success = 1
                 break
-            elif re.search(self.rdp_success_account_locked, line):
+            elif re.search(self.rdp_success_account_locked, str(line)):
                 result = bcolors.OKGREEN + "RDP-SUCCESS (ACCOUNT_LOCKED_OR_PASSWORD_EXPIRED) : " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(
                     port) + " - " + user + ":" + password + bcolors.ENDC
                 self.logger.output_file(result)
                 Main.is_success = 1
                 break
-            elif re.search(self.rdp_display_error, line):
+            # Errors
+            elif re.search(self.rdp_error_display, str(line)):
                 mess = "Please check \$DISPLAY is properly set. See README.md %s" % self.crowbar_readme
+                raise CrowbarExceptions(mess)
+            elif re.search(self.rdp_error_host_down, str(line)):
+                mess = "Host isn't up"
                 raise CrowbarExceptions(mess)
 
     def rdp(self):
@@ -522,4 +556,4 @@ class Main:
                 self.logger.output_file("No results found...")
 
     def signal_handler(self, signal, frame):
-        raise CrowbarExceptions("Exiting...")
+        raise CrowbarExceptions("\nExiting...")

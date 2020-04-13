@@ -24,19 +24,21 @@ Else if you wish to install from source, install all the dependencies:
 **Debain 9/10+ & Kali Rolling**
 
 ```
-# apt install -y nmap openvpn freerdp2-x11 tigervnc-viewer
+# sudo apt install -y nmap openvpn freerdp2-x11 tigervnc-viewer   python3 python3-pip
 ```
 
 **Debain 7/8 & Kali 1/2**
 
 ```
-# apt-get install -y nmap openvpn freerdp-x11 vncviewer
+# sudo apt-get install -y nmap openvpn freerdp-x11 vncviewer
 ```
 
 Then get latest version from GitHub:
 
 ```
 # git clone https://github.com/galkan/crowbar
+# cd crowbar/
+# pip3 install -r requirements.txt
 ```
 
 Note: The RDP client package depends on your OS:

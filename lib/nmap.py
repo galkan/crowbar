@@ -10,6 +10,7 @@ except Exception as err:
 
     raise CrowbarExceptions(str(err))
 
+
 class Nmap:
     def __init__(self):
         self.nmap_path = "/usr/bin/nmap"
@@ -40,7 +41,7 @@ class Nmap:
             nmap_scan_type = "-sS"
 
         nmap_scan_option = "-n -Pn -T4 %s --open -p %s --host-timeout=10m --max-rtt-timeout=600ms --initial-rtt-timeout=300ms --min-rtt-timeout=300ms --max-retries=2 --min-rate=150 -oG %s" % (
-                nmap_scan_type, port, tmpfile_name)
+            nmap_scan_type, port, tmpfile_name)
 
         if self.lib:
             nmap_scan_option = "%s %s" % (

@@ -5,6 +5,7 @@ try:
     from lib.core.exceptions import CrowbarExceptions
 except Exception as err:
     import sys
+
     print(err, file=sys.stderr)
     sys.exit(1)
 
@@ -19,5 +20,6 @@ if __name__ == "__main__":
         crowbar.run(crowbar.args.brute)
     except Exception as err:
         import sys
+
         print(err, file=sys.stderr)
         sys.exit(1)

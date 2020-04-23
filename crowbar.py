@@ -9,12 +9,7 @@ except Exception as err:
     print(err, file=sys.stderr)
     sys.exit(1)
 
-##
-### Main
-##
-
-if __name__ == "__main__":
-
+def main():
     try:
         crowbar = Main()
         crowbar.run(crowbar.args.brute)
@@ -23,3 +18,6 @@ if __name__ == "__main__":
 
         print(err, file=sys.stderr)
         sys.exit(1)
+
+if __name__ == "__main__":
+    main()

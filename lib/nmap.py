@@ -17,15 +17,8 @@ class Nmap:
         self.lib = True
 
         if not os.path.exists(self.nmap_path):
-            try:
-                import nmap
-                self.lib = False
-            except ImportError:
-                mess = "Please install the python3-nmap module (pip3 install nmap)!"
-                raise CrowbarExceptions(mess)
-            except:
-                mess = "File: %s doesn't exists!" % self.nmap_path
-                raise CrowbarExceptions(mess)
+            mess = "File: %s doesn't exists!" % self.nmap_path
+            raise CrowbarExceptions(mess)
 
     def port_scan(self, ip_list, port):
         result = []

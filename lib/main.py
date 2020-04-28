@@ -22,6 +22,15 @@ except Exception as err:
 __version__ = '0.4.2-dev'
 __banner__ = 'Crowbar v%s' % (__version__)
 
+def main():
+    try:
+        crowbar = Main()
+        crowbar.run(crowbar.args.brute)
+    except Exception as err:
+        import sys
+
+        print(err, file=sys.stderr)
+        sys.exit(1)
 
 class AddressAction(argparse.Action):
     def __call__(self, parser, args, values, option=None):

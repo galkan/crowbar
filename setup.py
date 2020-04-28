@@ -5,7 +5,7 @@ setup(
     version='4.1',
     entry_points={
         'console_scripts': [
-            'crowbar = crowbar:main',
+            'crowbar = lib.main:main',
         ],
     },
     install_requires=[

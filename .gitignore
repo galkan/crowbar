@@ -1,4 +1,4 @@
 *.pyc
 crowbar.out
 crowbar.log
-
+crowbar.egg-info

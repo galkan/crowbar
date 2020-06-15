@@ -19,8 +19,18 @@ except Exception as err:
 
     raise CrowbarExceptions(str(err))
 
-__version__ = '0.4.1-dev'
+__version__ = '0.4.2-dev'
 __banner__ = 'Crowbar v%s' % (__version__)
+
+def main():
+    try:
+        crowbar = Main()
+        crowbar.run(crowbar.args.brute)
+    except Exception as err:
+        import sys
+
+        print(err, file=sys.stderr)
+        sys.exit(1)
 
 class AddressAction(argparse.Action):
     def __call__(self, parser, args, values, option=None):
@@ -81,6 +91,7 @@ class AddressAction(argparse.Action):
                 mess = """ Usage: use --help for further information\ncrowbar.py: error: argument -c/--passwd or -C/--passwdfile expected one argument """
                 raise CrowbarExceptions(mess)
 
+
 class Main:
     is_success = 0
 
@@ -93,12 +104,14 @@ class Main:
         self.vpn_success = re.compile("Initialization Sequence Completed")
         self.vpn_remote_regex = re.compile("^\s+remote\s[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\s[0-9]{1,3}")
         self.vpn_warning = "Warning! Both \"remote\" options were used at the same time. But command line \"remote\" options will be used!"
+        self.vpn_error_in_use = "Address already in use (errno=98)"
 
         self.xfreerdp_path = "/usr/bin/xfreerdp"
         self.rdp_success = "Authentication only, exit status 0"
         self.rdp_success_ins_priv = "insufficient access privileges"
         self.rdp_success_account_locked = "alert internal error"
-        self.rdp_display_error = "Please check that the \$DISPLAY environment variable is properly set."
+        self.rdp_error_host_down = "ERRCONNECT_CONNECT_FAILED"  # [0x00020006] [0x00020014]
+        self.rdp_error_display = "Please check that the \$DISPLAY environment variable is properly set."
 
         self.vncviewer_path = "/usr/bin/vncviewer"
         self.vnc_success = "Authentication successful"
@@ -110,25 +123,38 @@ class Main:
         parser.add_argument('-b', '--brute', dest='brute', help='Target service', choices=self.services.keys(),
                             required=True)
         parser.add_argument('-s', '--server', dest='server', action='store', help='Static target')
-        parser.add_argument('-S', '--serverfile', dest='server_file', action='store', help='Multiple targets stored in a file')
-        parser.add_argument('-u', '--username', dest='username', action='store', nargs='+', help='Static name to login with')
-        parser.add_argument('-U', '--usernamefile', dest='username_file', action='store', help='Multiple names to login with, stored in a file')
-        parser.add_argument('-n', '--number', dest='thread', action='store', help='Number of threads to be active at once', default=5, type=int)
-        parser.add_argument('-l', '--log', dest='log_file', action='store', help='Log file (only write attempts)', metavar='FILE',
+        parser.add_argument('-S', '--serverfile', dest='server_file', action='store',
+                            help='Multiple targets stored in a file')
+        parser.add_argument('-u', '--username', dest='username', action='store', nargs='+',
+                            help='Static name to login with')
+        parser.add_argument('-U', '--usernamefile', dest='username_file', action='store',
+                            help='Multiple names to login with, stored in a file')
+        parser.add_argument('-n', '--number', dest='thread', action='store',
+                            help='Number of threads to be active at once', default=5, type=int)
+        parser.add_argument('-l', '--log', dest='log_file', action='store', help='Log file (only write attempts)',
+                            metavar='FILE',
                             default="crowbar.log")
-        parser.add_argument('-o', '--output', dest='output', action='store', help='Output file (write everything else)', metavar='FILE',
+        parser.add_argument('-o', '--output', dest='output', action='store', help='Output file (write everything else)',
+                            metavar='FILE',
                             default="crowbar.out")
         parser.add_argument('-c', '--passwd', dest='passwd', action='store', help='Static password to login with')
-        parser.add_argument('-C', '--passwdfile', dest='passwd_file', action='store', help='Multiple passwords to login with, stored in a file',
+        parser.add_argument('-C', '--passwdfile', dest='passwd_file', action='store',
+                            help='Multiple passwords to login with, stored in a file',
                             metavar='FILE')
-        parser.add_argument('-t', '--timeout', dest='timeout', action='store', help='[SSH] How long to wait for each thread (seconds)', default=10, type=int)
-        parser.add_argument('-p', '--port', dest='port', action='store', help='Alter the port if the service is not using the default value', type=int)
-        parser.add_argument('-k', '--keyfile', dest='key_file', action='store', help='[SSH/VNC] (Private) Key file or folder containing multiple files')
+        parser.add_argument('-t', '--timeout', dest='timeout', action='store',
+                            help='[SSH] How long to wait for each thread (seconds)', default=10, type=int)
+        parser.add_argument('-p', '--port', dest='port', action='store',
+                            help='Alter the port if the service is not using the default value', type=int)
+        parser.add_argument('-k', '--keyfile', dest='key_file', action='store',
+                            help='[SSH/VNC] (Private) Key file or folder containing multiple files')
         parser.add_argument('-m', '--config', dest='config', action='store', help='[OpenVPN] Configuration file ')
-        parser.add_argument('-d', '--discover', dest='discover', action='store_true', help='Port scan before attacking open ports', default=False)
-        parser.add_argument('-v', '--verbose', dest='verbose', action="count", help='Enable verbose output (-vv for more)', default=False)
+        parser.add_argument('-d', '--discover', dest='discover', action='store_true',
+                            help='Port scan before attacking open ports', default=False)
+        parser.add_argument('-v', '--verbose', dest='verbose', action="count",
+                            help='Enable verbose output (-vv for more)', default=False)
         parser.add_argument('-D', '--debug', dest='debug', action='store_true', help='Enable debug mode', default=False)
-        parser.add_argument('-q', '--quiet', dest='quiet', action='store_true', help='Only display successful logins', default=False)
+        parser.add_argument('-q', '--quiet', dest='quiet', action='store_true', help='Only display successful logins',
+                            default=False)
         parser.add_argument('options', nargs='*', action=AddressAction)
 
         try:
@@ -183,24 +209,40 @@ class Main:
 
         openvpn_cmd = "%s --remote %s %s --auth-user-pass %s --tls-exit --connect-retry-max 0 --config %s" % (
             self.openvpn_path, ip, port, brute_file_name, self.args.config)
+
         if self.args.verbose == 2:
             self.logger.output_file("CMD: %s" % openvpn_cmd)
-        proc = subprocess.Popen(shlex.split(openvpn_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        proc = subprocess.Popen(shlex.split(openvpn_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         brute = "LOG-OPENVPN: " + ip + ":" + str(port) + " - " + username + ":" + password + " - " + brute_file_name
         self.logger.log_file(brute)
-        for line in iter(proc.stdout.readline, ''):
+
+        # For every line out
+        for line in proc.stdout:
+            # Is debug enabled
             if self.args.debug:
-                self.logger.output_file(line.rstrip())
-            if re.search(self.vpn_success, line):
-                result = bcolors.OKGREEN + "OPENVPN-SUCCESS: " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(port) + " - " + username + ":" + password + bcolors.ENDC
+                self.logger.output_file(line.decode("utf-8").rstrip())
+
+            # Success
+            if re.search(self.vpn_success, str(line)):
+                result = bcolors.OKGREEN + "OPENVPN-SUCCESS: " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(
+                    port) + " - " + username + ":" + password + bcolors.ENDC
                 self.logger.output_file(result)
                 Main.is_success = 1
                 os.kill(proc.pid, signal.SIGQUIT)
+            # Errors
+            elif re.search(self.vpn_error_in_use, str(line)):
+                mess = "Already connected to a VPN"
+                raise CrowbarExceptions(mess)
         brute_file.close()
 
     def openvpn(self):
-        port = 443    #TCP 443, TCP 943, UDP 1194
+        port = 443  # TCP 443, TCP 943, UDP 1194
+
+        if not 'SUDO_UID' in os.environ.keys():
+            mess = "OpenVPN requires super user privileges"
+            raise CrowbarExceptions(mess)
 
         if not os.path.exists(self.openvpn_path):
             mess = "openvpn: %s path doesn't exists on the system" % os.path.abspath(self.openvpn_path)
@@ -288,15 +330,18 @@ class Main:
         if self.args.verbose == 2:
             self.logger.output_file("CMD: %s" % vnc_cmd)
 
-        proc = subprocess.Popen(shlex.split(vnc_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc = subprocess.Popen(shlex.split(vnc_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         brute = "LOG-VNC: " + ip + ":" + str(port) + " - " + keyfile
         self.logger.log_file(brute)
 
-        for line in iter(proc.stderr.readline, ''):
+        # For every line out
+        for line in proc.stdout:
+            # Is debug enabled
             if self.args.debug:
-                self.logger.output_file(line.rstrip())
-            if re.search(self.vnc_success, line):
+                self.logger.output_file(line.decode("utf-8").rstrip())
+
+            if re.search(self.vnc_success, str(line)):
                 os.kill(proc.pid, signal.SIGQUIT)
                 result = bcolors.OKGREEN + "VNC-SUCCESS: " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(
                     port) + " - " + keyfile + bcolors.ENDC
@@ -340,33 +385,44 @@ class Main:
 
         if self.args.verbose == 2:
             self.logger.output_file("CMD: %s" % rdp_cmd)
-        proc = subprocess.Popen(shlex.split(rdp_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # stderr to stdout
+        proc = subprocess.Popen(shlex.split(rdp_cmd), shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         brute = "LOG-RDP: " + ip + ":" + str(port) + " - " + user + ":" + password
         self.logger.log_file(brute)
-        for line in iter(proc.stderr.readline, ''):
+
+        # For every line out
+        for line in proc.stdout:
+            # Is debug enabled
             if self.args.debug:
-                self.logger.output_file(line.rstrip())
-            if re.search(self.rdp_success, line):
+                self.logger.output_file(line.decode("utf-8").rstrip())
+
+            # Success
+            if re.search(self.rdp_success, str(line)):
                 result = bcolors.OKGREEN + "RDP-SUCCESS : " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(
                     port) + " - " + user + ":" + password + bcolors.ENDC
                 self.logger.output_file(result)
                 Main.is_success = 1
                 break
-            elif re.search(self.rdp_success_ins_priv, line):
+            elif re.search(self.rdp_success_ins_priv, str(line)):
                 result = bcolors.OKGREEN + "RDP-SUCCESS (INSUFFICIENT PRIVILEGES) : " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(
                     port) + " - " + user + ":" + password + bcolors.ENDC
                 self.logger.output_file(result)
                 Main.is_success = 1
                 break
-            elif re.search(self.rdp_success_account_locked, line):
+            elif re.search(self.rdp_success_account_locked, str(line)):
                 result = bcolors.OKGREEN + "RDP-SUCCESS (ACCOUNT_LOCKED_OR_PASSWORD_EXPIRED) : " + bcolors.ENDC + bcolors.OKBLUE + ip + ":" + str(
                     port) + " - " + user + ":" + password + bcolors.ENDC
                 self.logger.output_file(result)
                 Main.is_success = 1
                 break
-            elif re.search(self.rdp_display_error, line):
+            # Errors
+            elif re.search(self.rdp_error_display, str(line)):
                 mess = "Please check \$DISPLAY is properly set. See README.md %s" % self.crowbar_readme
+                raise CrowbarExceptions(mess)
+            elif re.search(self.rdp_error_host_down, str(line)):
+                mess = "Host isn't up"
                 raise CrowbarExceptions(mess)
 
     def rdp(self):
@@ -534,4 +590,4 @@ class Main:
                 self.logger.output_file("No results found...")
 
     def signal_handler(self, signal, frame):
-        raise CrowbarExceptions("Exiting...")
+        raise CrowbarExceptions("\nExiting...")

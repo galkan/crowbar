@@ -10,21 +10,15 @@ except Exception as err:
 
     raise CrowbarExceptions(str(err))
 
+
 class Nmap:
     def __init__(self):
         self.nmap_path = "/usr/bin/nmap"
         self.lib = True
 
         if not os.path.exists(self.nmap_path):
-            try:
-                import nmap
-                self.lib = False
-            except ImportError:
-                mess = "Please install the python3-nmap module (pip3 install nmap)!"
-                raise CrowbarExceptions(mess)
-            except:
-                mess = "File: %s doesn't exists!" % self.nmap_path
-                raise CrowbarExceptions(mess)
+            mess = "File: %s doesn't exists!" % self.nmap_path
+            raise CrowbarExceptions(mess)
 
     def port_scan(self, ip_list, port):
         result = []
@@ -40,7 +34,7 @@ class Nmap:
             nmap_scan_type = "-sS"
 
         nmap_scan_option = "-n -Pn -T4 %s --open -p %s --host-timeout=10m --max-rtt-timeout=600ms --initial-rtt-timeout=300ms --min-rtt-timeout=300ms --max-retries=2 --min-rate=150 -oG %s" % (
-                nmap_scan_type, port, tmpfile_name)
+            nmap_scan_type, port, tmpfile_name)
 
         if self.lib:
             nmap_scan_option = "%s %s" % (

@@ -322,7 +322,8 @@ class Main:
         pool.wait_completion()
 
     def rdplogin(self, ip, user, password, port):
-        rdp_cmd = "%s /v:%s /port:%s /u:%s /p:%s /cert-ignore +auth-only" % (
+        # Could look into using: -grab-keyboard -mouse-motion -wallpaper -themes
+        rdp_cmd = "%s /v:%s /port:%s /u:%s /p:%s /cert-ignore -clipboard +auth-only " % (
             self.xfreerdp_path, ip, port, user, password)
 
         if self.args.verbose == 2:

@@ -2,7 +2,7 @@
 
 ### What is Crowbar?
 
-**Crowbar** (formally known as Levye) is a brute forcing tool that can be used during penetration tests. It was developed to brute force some protocols in a different manner according to other popular brute forcing tools. As an example, while most brute forcing tools use username and password for SSH brute force, Crowbar uses SSH key(s). This allows for any private keys that have been obtained during penetration tests, to be used to attack other SSH servers.
+**Crowbar** _(formally known as Levye)_ is a brute forcing tool that can be used during penetration tests. It was developed to brute force some protocols in a different manner according to other popular brute forcing tools. As an example, while most brute forcing tools use username and password for SSH brute force, Crowbar uses SSH key(s). This allows for any private keys that have been obtained during penetration tests, to be used to attack other SSH servers.
 
 Currently **Crowbar** supports:
 
@@ -10,6 +10,8 @@ Currently **Crowbar** supports:
 - Remote Desktop Protocol (RDP) with NLA support (`-b rdp`)
 - SSH private key authentication (`-b sshkey`)
 - VNC key authentication (`-b vpn`)
+
+- - -
 
 ### Installation
 
@@ -43,52 +45,36 @@ Then get latest version from GitHub:
 
 Note: The RDP client package depends on your OS:
 
-+ Debain 9/10 & Kali Rolling uses `freerdp2-x11`
-+ Debian 7/8 & Kali 1/2 uses `freerdp-x11` package.
-+ Else you can try `xfreerdp`.
-+ The fall back method would be to compile & tweak `freerdp` by following: http://opentechnotes.blogspot.co.uk/2015/02/compile-headless-freerdp-credential-checking.html
+- Debain 9/10 & Kali Rolling uses `freerdp2-x11`
+- Debian 7/8 & Kali 1/2 uses `freerdp-x11` package.
+- Else you can try `xfreerdp`.
+- The fall back method would be to compile & tweak `freerdp` by following: http://opentechnotes.blogspot.co.uk/2015/02/compile-headless-freerdp-credential-checking.html
 
 _Don't forget to patch `./lib/main.py` to point to the new binary_!
 
+- - -
+
 ### Usage
 
-**-b**: Target service. Crowbar supports: `openvpn`, `rdp`, `sshkey`, `vnckey`
-
-**-c**: Static password to login with
-
-**-C**: `</path/to/file>` for passwords list
-
-**-d**: Run a tcp port scan (nmap) on the IP range (`-s`/`-S`) before trying to brute force. This will discover whether the target's port is open.
-
-**-D**: Enable debug mode
-
-**-h**: Shows a help menu
-
-**-k**: `</path/to/file-or-folder>` for key files (for SSH or VNC)
-
-**-l**: `</path/to/file>` to store the log file (default is `./crowbar.log`)
-
-**-m**: `</path/to/file>` for a OpenVPN configuration file
-
-**-n**: Thread count
-
-**-o**: `</path/to/file>` to store the successfully attempt(s) (default is `./crowbar.out`)
-
-**-p**: Port number (if the service is not on the default port)
-
-**-q**: Enable quiet mode (only show successful logins)
-
-**-s**: Target IP address/range (in CIDR notation)
-
-**-S**: `</path/to/file>` which is stores target IP addresses
-
-**-t**: Timeout value
-
-**-u**: Single username
-
-**-U**: `</path/to/file>` which stores the username list
-
-**-v**: Enable verbose mode (shows all the attempts)
+- **-b**: Target service. Crowbar supports: `openvpn`, `rdp`, `sshkey`, `vnckey`
+- **-c**: Static password to login with
+- **-C**: `</path/to/file>` for passwords list
+- **-d**: Run a tcp port scan (nmap) on the IP range (`-s`/`-S`) before trying to brute force. This will discover whether the target's port is open
+- **-D**: Enable debug mode
+- **-h**: Shows a help menu
+- **-k**: `</path/to/file-or-folder>` for key files (for SSH or VNC)
+- **-l**: `</path/to/file>` to store the log file (default is `./crowbar.log`)
+- **-m**: `</path/to/file>` for a OpenVPN configuration file
+- **-n**: Thread count
+- **-o**: `</path/to/file>` to store the successfully attempt(s) (default is `./crowbar.out`)
+- **-p**: Port number (if the service is not on the default port)
+- **-q**: Enable quiet mode (only show successful logins)
+- **-s**: Target IP address/range (in CIDR notation)
+- **-S**: `</path/to/file>` which is stores target IP addresses
+- **-t**: Timeout value
+- **-u**: Single username
+- **-U**: `</path/to/file>` which stores the username list
+- **-v**: Enable verbose mode (shows all the attempts)
 
 If you want see all usage options, please use: `./crowbar.py --help`.
 
@@ -106,10 +92,13 @@ If you want see all usage options, please use: `./crowbar.py --help`.
 2015-03-28 11:04:00 RDP-SUCCESS : 10.68.35.150:3389 - "gokhan alkan@DOMAIN":Aa123456,
 ```
 
+- - -
+
 ### Demonstration Videos
 
 - https://www.youtube.com/watch?v=4QZAWGsveSM
 
+- - -
 
 ### Brute Forcing - Remote Desktop Protocol (RDP)
 
@@ -225,6 +214,39 @@ remote vpn.example.com 1194 udp
 ### Logs & Output
 
 Once you have executed Crowbar, it generates 2 files for logging and result that are located in your current directory. Default log file name is `crowbar.log` which stores all brute force attempts while execution. If you don't want use default log file, you should use `-l log_path`. The second file is `crowbar.out` which stores successful attempts while execution. If you don't want use default output file, you should use `-o output_path`. After that you can observe Crowbar operations.
+
+You can make the output more verbose by doing `-v`, or even more information can be shown with `-vv`. If you're trying to troubleshoot an issue or potential bug, using `-D` will enable debug mode and will give a lot more output.
+
+- - -
+
+### Black Hat Sessions
+
+- [![ToolsWatch 2014 Arsenal](https://rawgit.com/toolswatch/badges/master/arsenal/2014.svg)](https://www.blackhat.com/us-14/arsenal.html#Alkan)
+- [![ToolsWatch 2015 Arsenal](https://rawgit.com/toolswatch/badges/master/arsenal/2015.svg)](http://www.blackhat.com/us-15/arsenal.html#heybe-pentest-automation-toolkit)
+
+- - -
+
+### Categories
+
+- Network Attacks
+
+- - -
+
+### Code
+
+- https://github.com/galkan/crowbar
+
+- - -
+
+### Lead Developer
+
+- Gokhan Alkan - https://github.com/galkan
+
+- - -
+
+### Social Media
+
+- [Twitter](https://twitter.com/gokhan_alkn)
 
 - - -
 

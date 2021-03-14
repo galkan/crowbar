@@ -23,13 +23,13 @@ Currently **Crowbar** supports:
 
 Else if you wish to install from source, install all the dependencies:
 
-**Debain 9/10+ & Kali Rolling**
+**Debian 9/10+ & Kali Rolling**
 
 ```
 # sudo apt install -y nmap openvpn freerdp2-x11 tigervnc-viewer   python3 python3-pip
 ```
 
-**Debain 7/8 & Kali 1/2**
+**Debian 7/8 & Kali 1/2**
 
 ```
 # sudo apt-get install -y nmap openvpn freerdp-x11 vncviewer
@@ -45,7 +45,7 @@ Then get latest version from GitHub:
 
 Note: The RDP client package depends on your OS:
 
-- Debain 9/10 & Kali Rolling uses `freerdp2-x11`
+- Debian 9/10 & Kali Rolling uses `freerdp2-x11`
 - Debian 7/8 & Kali 1/2 uses `freerdp-x11` package.
 - Else you can try `xfreerdp`.
 - The fall back method would be to compile & tweak `freerdp` by following: http://opentechnotes.blogspot.co.uk/2015/02/compile-headless-freerdp-credential-checking.html

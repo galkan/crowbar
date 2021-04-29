@@ -30,6 +30,10 @@ class IpRange:
         return socket.inet_ntoa(struct.pack('!I', ipbinary))
 
     def iprange(self, ipaddr):
+        single_re = re.compile(r"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$", re.VERBOSE) # IP address without CIDR notation
+        res = single_re.match(ipaddr)
+        if res:
+            return [ipaddr.strip()]
         span_re = re.compile(r'''(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})   # The beginning IP address
                              \s*-\s*
                              (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})       # The end IP address

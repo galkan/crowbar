@@ -69,8 +69,8 @@ _Don't forget to patch `./lib/main.py` to point to the new binary_!
 - **-o**: `</path/to/file>` to store the successfully attempt(s) (default is `./crowbar.out`)
 - **-p**: Port number (if the service is not on the default port)
 - **-q**: Enable quiet mode (only show successful logins)
-- **-s**: Target IP address/range (in CIDR notation)
-- **-S**: `</path/to/file>` which is stores target IP addresses
+- **-s**: Target IP address/range
+- **-S**: `</path/to/file>` File containing target IP addresses/ranges
 - **-t**: Timeout value
 - **-u**: Single username
 - **-U**: `</path/to/file>` which stores the username list

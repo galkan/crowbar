@@ -183,7 +183,7 @@ class Main:
                 mess = "File: %s cannot be opened" % os.path.abspath(self.args.server_file)
                 raise CrowbarExceptions(mess)
             except:
-                mess = "Invalid IP Address! Please use IP/CIDR notation <192.168.37.37/32, 192.168.1.0/24>"
+                mess = "Invalid IP Address! " + bcolors.FAIL + str(_) + bcolors.ENDC + "Please use valid IP/CIDR notation <192.168.43.56, 192.168.37.37/32, 192.168.1.0/24>"
                 raise CrowbarExceptions(mess)
 
         if self.args.verbose:

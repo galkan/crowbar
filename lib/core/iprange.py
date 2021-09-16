@@ -38,7 +38,7 @@ class IpRange:
         if res:
             beginning = res.group(1)
             end = res.group(2)
-            return span_iprange(beginning, end)
+            return self.span_iprange(beginning, end)
 
         cidr_re = re.compile(r'''(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})   # The IP address
                              /(\d{1,2})                                 # The mask
@@ -55,15 +55,15 @@ class IpRange:
                           ''', re.VERBOSE)
         res = wild_re.match(ipaddr)
         if res:
-            return wildcard_iprange(ipaddr)
+            return self.wildcard_iprange(ipaddr)
 
         raise InvalidIPAddress
 
     def span_iprange(self, beginning, end):
         b = self.ipaddr_to_binary(beginning)
-        e = ipaddr_to_binary(end)
+        e = self.ipaddr_to_binary(end)
         while (b <= e):
-            yield binary_to_ipaddr(b)
+            yield self.binary_to_ipaddr(b)
             b = b + 1
 
     def cidr_iprange(self, ipaddr, cidrmask):

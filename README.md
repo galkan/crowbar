@@ -64,9 +64,9 @@ _Don't forget to patch `./lib/main.py` to point to the new binary_!
 - **-h**: Shows a help menu
 - **-k**: `</path/to/file-or-folder>` for key files (for SSH or VNC)
 - **-l**: `</path/to/file>` to store the log file (default is `./crowbar.log`)
-- **-m**: `</path/to/file>` for a OpenVPN configuration file
+- **-m**: `</path/to/file>` for an OpenVPN configuration file
 - **-n**: Thread count
-- **-o**: `</path/to/file>` to store the successfully attempt(s) (default is `./crowbar.out`)
+- **-o**: `</path/to/file>` to store the successful attempt(s) (default is `./crowbar.out`)
 - **-p**: Port number (if the service is not on the default port)
 - **-q**: Enable quiet mode (only show successful logins)
 - **-s**: Target IP address/range (in CIDR notation)
